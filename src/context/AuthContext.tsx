@@ -1,9 +1,18 @@
-import { FC, ReactNode, useContext, createContext } from "react";
+import { FC, ReactNode, useContext, createContext, useState } from "react";
 import { makeRequest } from "../hooks/makeRequest";
 
 interface AuthContextProps {
     registerClient: (values: RegisterData) => Promise<void>
+    loginClient: (values: LoginData) => Promise<void>
 
+
+}
+interface UserType {
+    _id: string
+    name: string
+    lastName: string,
+    password?: string,
+    email: string
 }
 
 interface RegisterData {
@@ -14,9 +23,17 @@ interface RegisterData {
 
 }
 
+interface LoginData {
+    email?: string,
+    password: string,
+}
+
 const AuthContext = createContext<AuthContextProps | undefined>(undefined)
 
 export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
+    const [user, setUser] = useState<UserType>();
+
+
     const registerClient = async (values: RegisterData) => {
         await makeRequest('POST', '/register', values)
             .catch((error) => {
@@ -24,8 +41,22 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
             })
     }
 
+    const loginClient = async (values: LoginData) => {
+        return await makeRequest('POST', '/login', values)
+            .then((response) => {
+                const userData = response?.data;
+                if (userData && userData.user._id) {
+                    localStorage.setItem('userId', userData.user._id);
+                    localStorage.setItem('accessToken', userData.accessToken)
+                    setUser(userData.user);
+                } else { console.error("Invalid user data received") }
+            })
+            .catch((error) => { throw new Error(error) });
+    }
+
     const contextValues = {
-        registerClient
+        registerClient,
+        loginClient
     }
 
     return (

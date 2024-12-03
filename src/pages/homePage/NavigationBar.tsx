@@ -4,6 +4,9 @@ import logo from '../../images/logoSherman.png';
 import { Link } from 'react-router-dom';
 
 const NavigationBar: FC = () => {
+
+    const isLoggedIn = localStorage.getItem('accessToken');
+
     return (
         <AppBar position="static" sx={{ backgroundColor: '#1c1c1c' }}>
             <Toolbar>
@@ -24,7 +27,8 @@ const NavigationBar: FC = () => {
                 <Button color="inherit">About</Button>
                 <Button color="inherit">Training</Button>
                 <Button color="inherit">Contact</Button>
-                <Button component={Link} to="/register" color="inherit">Join Us!</Button>
+                <Button component={Link} to={isLoggedIn ? "/" : "/register"} color="inherit">        {isLoggedIn ? "Log out" : "Join Us!"}
+                </Button>
             </Toolbar>
         </AppBar>
     )
