@@ -1,6 +1,6 @@
-import { Box, Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid"
 import { FC } from "react";
-import tagLogo from '../../images/shermanTag.jpg';
 
 
 const NewsSection: FC = () => {
@@ -10,7 +10,6 @@ const NewsSection: FC = () => {
                 Latest News
             </Typography>
             <Grid container spacing={4} justifyContent="center">
-                {/* News Card */}
                 {[1, 2, 3].map((_, index) => (
                     <Grid item xs={12} sm={6} md={4} key={index}>
                         <Card>

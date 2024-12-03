@@ -20,7 +20,7 @@ const NavigationBar: FC = () => {
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
                     Sherman Shooting Team
                 </Typography>
-                <Button color="inherit">Home</Button>
+                <Button component={Link} to="/" color="inherit">Home</Button>
                 <Button color="inherit">About</Button>
                 <Button color="inherit">Training</Button>
                 <Button color="inherit">Contact</Button>
