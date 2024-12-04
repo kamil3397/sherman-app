@@ -1,11 +1,25 @@
 import { AppBar, Toolbar, Box, Typography, Button } from '@mui/material';
 import React, { FC } from 'react';
-import logo from '../../images/logoSherman.png';
-import { Link } from 'react-router-dom';
+import logo from '../images/logoSherman.png';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../context/AuthContext';
 
 const NavigationBar: FC = () => {
-
+    const { logoutClient } = useAuthContext()
     const isLoggedIn = localStorage.getItem('accessToken');
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        await logoutClient()
+            .then(() => {
+                console.log('Logout successful')
+                navigate('/')
+            })
+            .catch((error) => {
+                console.log('Error during logout:', error)
+            })
+    }
+
 
     return (
         <AppBar position="static" sx={{ backgroundColor: '#1c1c1c' }}>
@@ -27,8 +41,15 @@ const NavigationBar: FC = () => {
                 <Button color="inherit">About</Button>
                 <Button color="inherit">Training</Button>
                 <Button color="inherit">Contact</Button>
-                <Button component={Link} to={isLoggedIn ? "/" : "/register"} color="inherit">        {isLoggedIn ? "Log out" : "Join Us!"}
-                </Button>
+                {isLoggedIn ? (
+                    <Button onClick={handleLogout} color="inherit">
+                        Log out
+                    </Button>
+                ) : (
+                    <Button component={Link} to="/register" color="inherit">
+                        Join Us!
+                    </Button>
+                )}
             </Toolbar>
         </AppBar>
     )

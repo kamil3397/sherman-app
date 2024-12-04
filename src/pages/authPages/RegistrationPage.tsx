@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box, TextField, Button, Typography, Container, Paper } from '@mui/material';
-import NavigationBar from '../homePage/NavigationBar';
+import NavigationBar from '../../components/NavigationBar';
 import { useAuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';

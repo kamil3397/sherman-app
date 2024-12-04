@@ -4,6 +4,7 @@ import { makeRequest } from "../hooks/makeRequest";
 interface AuthContextProps {
     registerClient: (values: RegisterData) => Promise<void>
     loginClient: (values: LoginData) => Promise<void>
+    logoutClient: () => Promise<void>
 
 
 }
@@ -54,9 +55,22 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
             .catch((error) => { throw new Error(error) });
     }
 
+    const logoutClient = async () => {
+        return await makeRequest('POST', '/logout')
+            .then(() => {
+                localStorage.removeItem('userId')
+                localStorage.removeItem('accessToken')
+                setUser(undefined)
+            })
+            .catch((error) => {
+                throw new Error('Error during logout:', error);
+            })
+    }
+
     const contextValues = {
         registerClient,
-        loginClient
+        loginClient,
+        logoutClient
     }
 
     return (

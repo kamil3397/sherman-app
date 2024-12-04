@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from '@mui/material';
-import NavigationBar from './NavigationBar';
+import NavigationBar from '../../components/NavigationBar';
 import HeroSection from './HeroSection';
 import InstagramSection from './InstagramSection';
 import Footer from './Footer';

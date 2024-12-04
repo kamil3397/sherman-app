@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box, TextField, Button, Typography, Container, Paper } from '@mui/material';
-import NavigationBar from '../homePage/NavigationBar';
+import NavigationBar from '../../components/NavigationBar';
 import * as yup from "yup"
 import { useAuthContext } from '../../context/AuthContext';
 import { yupResolver } from '@hookform/resolvers/yup'
