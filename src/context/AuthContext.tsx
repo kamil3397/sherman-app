@@ -5,7 +5,6 @@ interface AuthContextProps {
     registerClient: (values: RegisterData) => Promise<void>
     loginClient: (values: LoginData) => Promise<void>
 
-
 }
 interface UserType {
     _id: string
@@ -24,7 +23,7 @@ interface RegisterData {
 }
 
 interface LoginData {
-    email?: string,
+    email: string,
     password: string,
 }
 
@@ -36,6 +35,10 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     const registerClient = async (values: RegisterData) => {
         await makeRequest('POST', '/register', values)
+            .then(() => {
+                //+ alert z AlertContext
+                window.location.assign('/login'); //podowiedz z GPT, useNavigate wysypywał apke
+            })
             .catch((error) => {
                 throw new Error(error)
             })
