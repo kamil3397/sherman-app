@@ -1,23 +1,13 @@
 import React, { FC } from 'react';
 import { Box, TextField, Button, Typography, Container, Paper } from '@mui/material';
 import NavigationBar from '../homePage/NavigationBar';
-import { useAuthContext } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { makeRequest } from '../../hooks/makeRequest';
 
-
-
-interface RegisterData {
-    name: string;
-    lastName: string;
-    email: string;
-    password: string;
-
-}
-
-type Inputs = {
+type FormData = {
     name: string,
     lastName: string,
     email: string,
@@ -26,6 +16,7 @@ type Inputs = {
 }
 
 const schema = yup.object().shape({
+    // w required, powinien byc message, zeby wyswietlic w helperText
     name: yup.string().min(2).max(50).required(),
     lastName: yup.string().min(2).max(50).required(),
     email: yup.string().email().required(),
@@ -33,10 +24,9 @@ const schema = yup.object().shape({
     confirmPassword: yup.string().label('confirm password').required().oneOf([yup.ref('password')], 'Passwords must match'),
 })
 const RegistrationPage: FC = () => {
-    const { registerClient } = useAuthContext()
     const navigate = useNavigate();
 
-    const { register, handleSubmit, formState: { errors } } = useForm<Inputs>({
+    const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
         resolver: yupResolver(schema),
         defaultValues: {
             name: '',
@@ -47,19 +37,20 @@ const RegistrationPage: FC = () => {
         }
     })
 
-    const onSubmit = (values: Inputs) => {
-        const { name, lastName, email, password } = values;
-        const newUserData: RegisterData = { name, lastName, email, password };
+    const onSubmit = async (values: FormData) => {
+        const { confirmPassword: _, ...newUserData } = values;
 
-        registerClient(newUserData)
+        await makeRequest('POST', '/register', newUserData)
             .then(() => {
-                console.log('Registered succesfully')
-                navigate('/')
+                //+ alert z AlertContext
+                navigate('/login')
             })
             .catch((error) => {
-                console.log('Wrong credencials provided')
-                console.error(error);
-            });
+                // tutaj powinnismy ustawiac jakis state np error
+                // a ponizej zrobic, np pod formularzem Mui alert* z tym bledem
+                console.log(error)
+            })
+
     };
     return (
         <>

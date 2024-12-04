@@ -2,9 +2,7 @@ import { FC, ReactNode, useContext, createContext, useState } from "react";
 import { makeRequest } from "../hooks/makeRequest";
 
 interface AuthContextProps {
-    registerClient: (values: RegisterData) => Promise<void>
     loginClient: (values: LoginData) => Promise<void>
-
 }
 interface UserType {
     _id: string
@@ -12,14 +10,6 @@ interface UserType {
     lastName: string,
     password?: string,
     email: string
-}
-
-interface RegisterData {
-    name: string;
-    lastName: string;
-    email: string;
-    password: string;
-
 }
 
 interface LoginData {
@@ -32,20 +22,8 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined)
 export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<UserType>();
 
-
-    const registerClient = async (values: RegisterData) => {
-        await makeRequest('POST', '/register', values)
-            .then(() => {
-                //+ alert z AlertContext
-                window.location.assign('/login'); //podowiedz z GPT, useNavigate wysypywał apke
-            })
-            .catch((error) => {
-                throw new Error(error)
-            })
-    }
-
     const loginClient = async (values: LoginData) => {
-        return await makeRequest('POST', '/login', values)
+        await makeRequest('POST', '/login', values)
             .then((response) => {
                 const userData = response?.data;
                 if (userData && userData.user._id) {
@@ -57,13 +35,9 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
             .catch((error) => { throw new Error(error) });
     }
 
-    const contextValues = {
-        registerClient,
-        loginClient
-    }
 
     return (
-        <AuthContext.Provider value={contextValues}>
+        <AuthContext.Provider value={{ loginClient }}>
             {children}
         </AuthContext.Provider>
     )
