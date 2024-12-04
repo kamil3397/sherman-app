@@ -22,7 +22,7 @@ type Inputs = {
     lastName: string,
     email: string,
     password: string,
-    confirm_password: string,
+    confirmPassword: string,
 }
 
 const schema = yup.object().shape({
@@ -30,7 +30,7 @@ const schema = yup.object().shape({
     lastName: yup.string().min(2).max(50).required(),
     email: yup.string().email().required(),
     password: yup.string().min(8).required(),
-    confirm_password: yup.string().label('confirm password').required().oneOf([yup.ref('password')], 'Passwords must match'),
+    confirmPassword: yup.string().label('confirm password').required().oneOf([yup.ref('password')], 'Passwords must match'),
 })
 const RegistrationPage: FC = () => {
     const { registerClient } = useAuthContext()
@@ -43,7 +43,7 @@ const RegistrationPage: FC = () => {
             lastName: '',
             email: '',
             password: '',
-            confirm_password: '',
+            confirmPassword: '',
         }
     })
 
@@ -109,7 +109,7 @@ const RegistrationPage: FC = () => {
                             />
                         </Box>
                         <Box sx={{ marginBottom: 2 }}>
-                            <TextField {...register('confirm_password')}
+                            <TextField {...register('confirmPassword')}
                                 label="Confirm Password"
                                 type="password"
                                 variant="outlined"

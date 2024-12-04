@@ -8,11 +8,11 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom';
 
 interface LoginData {
-    email?: string,
+    email: string,
     password: string,
 }
 const schema = yup.object({
-    email: yup.string().email('Email is required'),
+    email: yup.string().email().required('Email is required'),
     password: yup.string().required('Password is required').min(8, 'Password is too short - should be 8 chars minimum.')
 })
 
