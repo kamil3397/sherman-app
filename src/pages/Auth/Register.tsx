@@ -15,11 +15,13 @@ type FormData = {
     confirmPassword: string,
 }
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+
 const schema = yup.object().shape({
     name: yup.string().min(2, 'Name must be at least 2 characters').max(50).required('Name is required'),
     lastName: yup.string().min(2, 'Last name must be at least 2 characters').max(50).required('Last name is required'),
     email: yup.string().email().required('Email is required'),
-    password: yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
+    password: yup.string().min(8, 'Password must be at least 8 characters').matches(passwordRegex, "Your password must include at least one uppercase letter and one one number").required('Password is required'),
     confirmPassword: yup.string().required('Confirm password is a required field').oneOf([yup.ref('password')], 'Passwords must match'),
 });
 
