@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid"
 import { FC } from "react";
 
 
-const NewsSection: FC = () => {
+export const NewsSection: FC = () => {
     return (
         <Box sx={{ py: 4, px: 2 }}>
             <Typography variant="h4" align="center" gutterBottom>
@@ -32,4 +32,3 @@ const NewsSection: FC = () => {
         </Box>
     )
 }
-export default NewsSection

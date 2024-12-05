@@ -4,7 +4,7 @@ import logo from '../images/logoSherman.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext';
 
-const NavigationBar: FC = () => {
+export const NavigationBar: FC = () => {
     const { logoutClient } = useAuthContext()
     const isLoggedIn = localStorage.getItem('accessToken');
     const navigate = useNavigate();
@@ -55,4 +55,3 @@ const NavigationBar: FC = () => {
     )
 
 }
-export default NavigationBar;

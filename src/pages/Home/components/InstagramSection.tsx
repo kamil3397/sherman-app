@@ -1,8 +1,8 @@
 import { Box, Card, CardMedia, Typography } from "@mui/material"
 import { FC } from "react"
 import Grid from '@mui/material/Grid';
-import logo from '../../images/shermanLog.jpg'
-import catchPhrase from '../../images/shermanCatch.jpg'
+import logo from 'images/shermanLog.jpg'
+import catchPhrase from 'images/shermanCatch.jpg'
 
 const instagramPosts = [
     {
@@ -19,7 +19,7 @@ const instagramPosts = [
     }
 ];
 
-const InstagramSection: FC = () => {
+export const InstagramSection: FC = () => {
     return (
         <Box sx={{ py: 4, px: 2, backgroundColor: '#f5f5f5' }}>
             <Typography variant="h4" align="center" gutterBottom>
@@ -44,4 +44,3 @@ const InstagramSection: FC = () => {
         </Box>
     )
 }
-export default InstagramSection

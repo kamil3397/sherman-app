@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import { FC } from "react";
-import tagLogo from '../../images/shermanTag.jpg';
+import tagLogo from 'images/shermanTag.jpg';
 
 
-const HeroSection: FC = () => {
+export const HeroSection: FC = () => {
     return (
         <Box
             sx={{
@@ -26,4 +26,3 @@ const HeroSection: FC = () => {
         </Box>
     )
 }
-export default HeroSection

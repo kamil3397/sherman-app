@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material"
 import { FC } from "react"
 
-const Footer: FC = () => {
+export const Footer: FC = () => {
     return (
         <Box
             sx={{
@@ -17,4 +17,3 @@ const Footer: FC = () => {
         </Box>
     )
 }
-export default Footer
