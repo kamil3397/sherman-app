@@ -1,5 +1,6 @@
 import { FC, ReactNode, useContext, createContext, useState } from "react";
 import { makeRequest } from "../hooks/makeRequest";
+import { useAlertContext } from "./AlertContext";
 
 interface AuthContextProps {
     loginClient: (values: LoginData) => Promise<void>
@@ -21,6 +22,7 @@ interface LoginData {
 const AuthContext = createContext<AuthContextProps | undefined>(undefined)
 
 export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
+    const { showSuccessAlert, showErrorAlert } = useAlertContext();
     const [user, setUser] = useState<UserType>();
 
     const loginClient = async (values: LoginData) => {
@@ -30,10 +32,13 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
                 if (userData && userData.user._id) {
                     localStorage.setItem('userId', userData.user._id);
                     localStorage.setItem('accessToken', userData.accessToken)
+                    showSuccessAlert('Successfully logged in')
                     setUser(userData.user);
-                } else { console.error("Invalid user data received") }
+                } else { console.log("Invalid user data received") }
             })
-            .catch((error) => { throw new Error(error) });
+            .catch((error) => {
+                showErrorAlert('Wrong login or password provided')
+                throw new Error(error) });
     }
 
     const logoutClient = async () => {
@@ -41,9 +46,11 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
             .then(() => {
                 localStorage.removeItem('userId')
                 localStorage.removeItem('accessToken')
+                showSuccessAlert('Successfully logged out')
                 setUser(undefined)
             })
             .catch((error) => {
+                showErrorAlert('Error during logout')
                 throw new Error('Error during logout:', error);
             })
     }
