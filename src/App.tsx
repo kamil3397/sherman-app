@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Register from 'pages/Auth/Register';
 import Login from 'pages/Auth/Login';
 import { MainLayout } from 'layouts';
+import { ToastContainer } from 'react-toastify';
 //przerob import na lazy import
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
+      <ToastContainer/>
     </>
   );
 }
