@@ -39,7 +39,7 @@ export const NavigationBar: FC = () => {
                 </Typography>
                 <Button component={Link} to="/" color="inherit">Home</Button>
                 <Button color="inherit">About</Button>
-                <Button color="inherit">Training</Button>
+                <Button component={Link} to='/training' color="inherit">Training</Button>
                 <Button color="inherit">Contact</Button>
                 {isLoggedIn ? (
                     <Button onClick={handleLogout} color="inherit">

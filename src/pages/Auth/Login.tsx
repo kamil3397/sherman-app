@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Box, TextField, Button, Typography, Container, Paper } from '@mui/material';
+import { Box, TextField, Button, Typography, Container, Paper, FormControl } from '@mui/material';
 import { NavigationBar } from 'components';
 import * as yup from "yup"
 import { useAuthContext } from '../../context/AuthContext';
@@ -39,7 +39,6 @@ const LoginPage: FC = () => {
 
     return (
         <>
-            <NavigationBar />
             <Container maxWidth="sm">
                 <Paper elevation={3} sx={{ padding: 4, marginTop: 4 }}>
                     <Typography variant="h4" align="center" gutterBottom>
@@ -66,12 +65,13 @@ const LoginPage: FC = () => {
                                 helperText={!!errors.password && errors.password.message}
                             />
                         </Box>
-                        <Button variant="contained" color="primary" fullWidth type='submit'>
+                        <Button sx={{backgroundColor: '#444b51'}}variant="contained" fullWidth type='submit'>
                             Log In
                         </Button>
                         <Typography variant="body2" align="center" sx={{ marginTop: 2 }}>
                             Don't have an account? <a href="/register">Register</a>
                         </Typography>
+                        <FormControl/>
                     </form>
                 </Paper>
             </Container>

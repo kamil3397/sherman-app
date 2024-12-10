@@ -1,10 +1,13 @@
 import { PropsWithChildren } from "react"
 import { AuthProvider } from "./AuthContext"
+import { AlertProvider } from "./AlertContext"
 
 export const ContextProvider = ({ children }: PropsWithChildren) => {
     return (
-        <AuthProvider>
+        <AlertProvider>
+            <AuthProvider>
             {children}
-        </AuthProvider>
+            </AuthProvider>
+        </AlertProvider>
     )
 }
