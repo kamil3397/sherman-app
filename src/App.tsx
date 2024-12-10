@@ -5,6 +5,7 @@ import Register from 'pages/Auth/Register';
 import Login from 'pages/Auth/Login';
 import { MainLayout } from 'layouts';
 import { ToastContainer } from 'react-toastify';
+import { Calendar } from 'pages/Training/Calendar';
 //przerob import na lazy import
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="/register" element={<Register />} />
             <Route path='/login' element={<Login />} />
+            <Route path='/training' element={<Calendar />} />
           </Route>
         </Routes>
       </Router>

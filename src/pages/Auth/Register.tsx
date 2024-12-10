@@ -117,7 +117,7 @@ const RegistrationPage: FC = () => {
                         </Box>
                         <FormControl/>
                         
-                        <Button type='submit' variant="contained" color="primary" fullWidth>
+                        <Button type='submit' variant="contained" sx={{backgroundColor: '#444b51'}} fullWidth>
                             Register
                         </Button>
                         <Typography variant="body2" align="center" sx={{ marginTop: 2 }}>
