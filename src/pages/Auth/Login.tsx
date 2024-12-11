@@ -71,7 +71,6 @@ const LoginPage: FC = () => {
                         <Typography variant="body2" align="center" sx={{ marginTop: 2 }}>
                             Don't have an account? <a href="/register">Register</a>
                         </Typography>
-                        <FormControl/>
                     </form>
                 </Paper>
             </Container>

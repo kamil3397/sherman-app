@@ -50,8 +50,6 @@ const RegistrationPage: FC = () => {
                 navigate('/login')
             })
             .catch((error) => {
-                // tutaj powinnismy ustawiac jakis state np error
-                // a ponizej zrobic, np pod formularzem Mui alert* z tym bledem
                 showErrorAlert('Wrong credencials provided')
                 const errorMessage = error.response?.data?.message || 'An unexpected error occurred.';
                 setError(errorMessage);
@@ -115,7 +113,6 @@ const RegistrationPage: FC = () => {
                                 helperText={!!errors.confirmPassword && errors.confirmPassword.message}
                             />
                         </Box>
-                        <FormControl/>
                         
                         <Button type='submit' variant="contained" color="primary" fullWidth>
                             Register

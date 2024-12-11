@@ -34,7 +34,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
                     localStorage.setItem('accessToken', userData.accessToken)
                     showSuccessAlert('Successfully logged in')
                     setUser(userData.user);
-                } else { console.log("Invalid user data received") }
+                }
             })
             .catch((error) => {
                 showErrorAlert('Wrong login or password provided')
