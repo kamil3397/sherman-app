@@ -1,7 +1,7 @@
 import { useState, useEffect, FC } from 'react';
 import { Box, Typography, Paper, Grid } from '@mui/material';
 
-export const Calendar: FC = () => {
+  const Calendar: FC = () => {
   const [currentWeek, setCurrentWeek] = useState<Date[]>([]);
   const [today, setToday] = useState<Date>(new Date());
  
@@ -97,3 +97,4 @@ return(
 )
 
 }
+export default Calendar;
