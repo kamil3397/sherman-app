@@ -40,7 +40,7 @@ export const DateNav: FC<DateNavProps> = ({ startDate, setStartDate }) => {
           "&:hover": { backgroundColor: "#333b41" },
         }}
       >
-        Poprzedni tydzień
+        Previous Week
       </Button>
       <Typography variant="h6" sx={{ fontWeight: "bold", color: "#333" }}>
         {`Dzisiaj: ${format(new Date(), "dd/MM/yyyy")}`}
@@ -54,7 +54,7 @@ export const DateNav: FC<DateNavProps> = ({ startDate, setStartDate }) => {
           "&:hover": { backgroundColor: "#333b41" },
         }}
       >
-        Następny tydzień
+        Next Week
       </Button>
     </Box>
   );
