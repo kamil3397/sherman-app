@@ -5,7 +5,7 @@ import Register from 'pages/Auth/Register';
 import Login from 'pages/Auth/Login';
 import { MainLayout } from 'layouts';
 import { ToastContainer } from 'react-toastify';
-import { Calendar } from 'pages/Training/Calendar';
+import Calendar from 'pages/Training/Calendar';
 //przerob import na lazy import
 
 function App() {
