@@ -1,6 +1,7 @@
 import * as React from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box } from '@mui/material';
+import Logo from 'images/loader.svg';
 
 export const Loader = () => {
     return (
@@ -25,8 +26,9 @@ export const Loader = () => {
                 }}
             />
             {/*JAK zrobic zeby spinner był w około logo zeby zdąrzyło się załadować??? */}
+            
             <img
-                src="/images/loaderLogo.png"
+                src={Logo as unknown as string}
                 alt="Sherman Shooting Team Logo"
                 style={{
                     width: '80px',
