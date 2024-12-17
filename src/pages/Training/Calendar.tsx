@@ -1,7 +1,8 @@
 import { useState, useEffect, FC } from 'react';
-import { Box, Typography, Paper, Grid, Modal, TextField, Button } from '@mui/material';
+import { Box, Typography, Paper, Grid } from '@mui/material';
 import { getWeek, parse, lastDayOfISOWeek, eachDayOfInterval, format } from 'date-fns';
 import { DateNav } from './DateNav/DateNav';
+import AddEventModal from './DateNav/AddEventModal';
 
 type DateISO = {
   day: {
@@ -24,8 +25,6 @@ const Calendar: FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState<{ date: string; hour: string } | null>(null);
-  const [eventTitle, setEventTitle] = useState('');
-  const [eventDescription, setEventDescription] = useState('');
 
   const getCurrentWeek = (startDate: Date) => {
     const currentWeek = getWeek(startDate);
@@ -38,11 +37,11 @@ const Calendar: FC = () => {
       return {
         day: {
           date: format(day, 'dd/MM/yyyy'),
-          name: format(day, 'EEEE'), // return day name
+          name: format(day, 'EEEE'),
         },
         hours: [...Array(12)].map((_, hourIndex) => {
           const hour = 9 + hourIndex;
-          return `${hour < 10 ? '0' : ''}${hour}:00`; // return in timestamp format
+          return `${hour < 10 ? '0' : ''}${hour}:00`;
         }),
       };
     });
@@ -54,14 +53,12 @@ const Calendar: FC = () => {
     setOpenModal(true);
   };
 
-  const handleSaveEvent = () => {
-    if (selectedDateTime && eventTitle && eventDescription) {
+  const handleSaveEvent = (data: { title: string; description: string }) => {
+    if (selectedDateTime) {
       setEvents((prevEvents) => [
         ...prevEvents,
-        { date: selectedDateTime.date, hour: selectedDateTime.hour, title: eventTitle, description: eventDescription },
+        { date: selectedDateTime.date, hour: selectedDateTime.hour, title: data.title, description: data.description },
       ]);
-      setEventTitle('');
-      setEventDescription('');
       setOpenModal(false);
     }
   };
@@ -175,43 +172,7 @@ const Calendar: FC = () => {
           );
         })}
       </Grid>
-
-      <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-          }}
-        >
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Add Event
-          </Typography>
-          <TextField
-            fullWidth
-            label="Title"
-            value={eventTitle}
-            onChange={(e) => setEventTitle(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Training description"
-            value={eventDescription}
-            onChange={(e) => setEventDescription(e.target.value)}
-            sx={{ mb: 2 }}
-          />
-          <Button variant="contained" onClick={handleSaveEvent}>
-            Save
-          </Button>
-        </Box>
-      </Modal>
+      <AddEventModal open={openModal} onClose={() => setOpenModal(false)} onSave={handleSaveEvent} />
     </Box>
   );
 };
