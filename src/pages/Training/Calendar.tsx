@@ -1,8 +1,12 @@
-import { useState, useEffect, FC } from 'react';
+import { useState, useEffect, FC, useCallback } from 'react';
 import { Box, Typography, Paper, Grid } from '@mui/material';
 import { getWeek, parse, lastDayOfISOWeek, eachDayOfInterval, format } from 'date-fns';
+import axios from 'axios';
+import { dayAndTimeToISO } from 'utils/dayAndTimeToISO';
 import { DateNav } from './DateNav/DateNav';
-import AddEventModal from './DateNav/AddEventModal';
+import AddEventModal from './AddEventModal/AddEventModal';
+import { getCurrentWeek } from './utils/getCurrentWeek';
+import { EventBadge } from './components/EventBadge';
 
 type DateISO = {
   day: {
@@ -12,9 +16,9 @@ type DateISO = {
   hours: string[];
 };
 
-type Event = {
-  date: string;
-  hour: string;
+export type Event = {
+  startDate: string;
+  endDate: string;
   title: string;
   description: string;
 };
@@ -26,46 +30,34 @@ const Calendar: FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState<{ date: string; hour: string } | null>(null);
 
-  const getCurrentWeek = (startDate: Date) => {
-    const currentWeek = getWeek(startDate);
-    const firstDayOfWeek = parse(currentWeek.toString(), 'I', startDate);
-    const lastDayOfWeek = lastDayOfISOWeek(firstDayOfWeek);
-
-    const daysOfWeek = eachDayOfInterval({ start: firstDayOfWeek, end: lastDayOfWeek });
-
-    const weekdays = daysOfWeek.map((day) => {
-      return {
-        day: {
-          date: format(day, 'dd/MM/yyyy'),
-          name: format(day, 'EEEE'),
-        },
-        hours: [...Array(12)].map((_, hourIndex) => {
-          const hour = 9 + hourIndex;
-          return `${hour < 10 ? '0' : ''}${hour}:00`;
-        }),
-      };
-    });
-    setCurrentWeek(weekdays);
-  };
-
   const handleHourClick = (date: string, hour: string) => {
     setSelectedDateTime({ date, hour });
     setOpenModal(true);
   };
 
-  const handleSaveEvent = (data: { title: string; description: string }) => {
-    if (selectedDateTime) {
-      setEvents((prevEvents) => [
-        ...prevEvents,
-        { date: selectedDateTime.date, hour: selectedDateTime.hour, title: data.title, description: data.description },
-      ]);
-      setOpenModal(false);
-    }
-  };
+  const closeModal = useCallback(() => {
+    setOpenModal(false);
+  }, [setOpenModal]);
 
   useEffect(() => {
-    getCurrentWeek(startDate);
-  }, [startDate]);
+    const currentWeek = getCurrentWeek(startDate);
+    setCurrentWeek(currentWeek);
+
+    const fetchEvents = async () => {
+      const startDate = dayAndTimeToISO({ date: currentWeek[0].day.date, hour: '00:00' });
+      const endDate = dayAndTimeToISO({ date: currentWeek[6].day.date, hour: '23:59' });
+      await axios.get(`events?startDate=${startDate}&endDate=${endDate}`)
+        .then((res) => {
+        /*
+        event, ktory dostaniesz z backendu bedziesz mial strukture:
+        title, description, startDate, endDate
+        */
+
+        }).catch((err) => {
+          console.log(err);
+        });
+    };
+  }, [startDate, closeModal]);
 
   return (
     <Box
@@ -92,7 +84,7 @@ const Calendar: FC = () => {
           marginBottom: '10px',
         }}
       >
-        <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
+        <Typography variant="h6" sx={{ color: 'primary.dark', fontWeight: 'bold' }}>
           Today: {format(new Date(), 'dd/MM/yyyy')}
         </Typography>
         <DateNav startDate={startDate} setStartDate={setStartDate} />
@@ -108,21 +100,21 @@ const Calendar: FC = () => {
                 sx={{
                   padding: 3,
                   height: '600px',
-                  backgroundColor: isToday ? '#444b51' : '#ffffff',
-                  color: isToday ? '#ffffff' : '#000000',
+                  backgroundColor: isToday ? 'primary.dark' : 'secondary.main',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'flex-start',
                   overflow: 'hidden',
                 }}
               >
-                <Typography variant="h5" sx={{ textAlign: 'center', marginBottom: 2 }}>
+                <Typography variant="h5" sx={{ color: isToday ? 'secondary.main' : 'primary.dark', textAlign: 'center', marginBottom: 2 }}>
                   {day.name}
                 </Typography>
-                <Typography variant="h6" sx={{ textAlign: 'center', marginBottom: 2 }}>
+                <Typography variant="h6" sx={{ color: isToday ? 'secondary.main' : 'primary.dark', textAlign: 'center', marginBottom: 2 }}>
                   {day.date}
                 </Typography>
                 <Box sx={{ flex: 1, position: 'relative', marginTop: 2 }}>
+                  {/* <EventBadge hoursLength={hours}/> */}
                   {hours.map((hour, index) => (
                     <Box
                       key={hour}
@@ -137,11 +129,11 @@ const Calendar: FC = () => {
                         justifyContent: 'space-between',
                         paddingLeft: 5,
                         paddingRight: 5,
-                        backgroundColor: events.find(
-                          (event) => event.date === day.date && event.hour === hour
-                        )
-                          ? '#d3f9d8'
-                          : 'transparent',
+                        // backgroundColor: events.find(
+                        //   (event) => event.date === day.date && event.hour === hour
+                        // )
+                        //   ? '#d3f9d8'
+                        //   : 'transparent',
                       }}
                     >
                       <Typography
@@ -153,7 +145,7 @@ const Calendar: FC = () => {
                       >
                         {hour}
                       </Typography>
-                      {events
+                      {/* {events
                         .filter((event) => event.date === day.date && event.hour === hour)
                         .map((event, i) => (
                           <Typography
@@ -163,7 +155,7 @@ const Calendar: FC = () => {
                           >
                             {event.title}
                           </Typography>
-                        ))}
+                        ))} */}
                     </Box>
                   ))}
                 </Box>
@@ -172,7 +164,7 @@ const Calendar: FC = () => {
           );
         })}
       </Grid>
-      <AddEventModal open={openModal} onClose={() => setOpenModal(false)} onSave={handleSaveEvent} />
+      {selectedDateTime && <AddEventModal open={openModal} onClose={closeModal} dateTime={selectedDateTime}/>}
     </Box>
   );
 };
