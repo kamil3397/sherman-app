@@ -1,5 +1,6 @@
 import { createTheme } from '@mui/material';
 import { darkPalette } from './colorSchemes/dark';
+import { lightPalette } from './colorSchemes/light';
 
 export const theme = createTheme({
   colorSchemes: {
@@ -7,17 +8,9 @@ export const theme = createTheme({
       palette: darkPalette
     },
     light: {
-      palette: {
-        primary: {
-          main: '#FF0000'
-        },
-        text: {
-          primary: 'rgba(0, 0, 0, 0.87)',
-          secondary: 'rgba(0, 0, 0, 0.6)',
-          disabled: 'rgba(0, 0, 0, 0.3)',
-        }
-      }
-    } },
+      palette: lightPalette
+    }
+  },
 
   // palette: {
   //   primary: {

@@ -1,20 +1,12 @@
-import { useState, useEffect, FC, useCallback } from 'react';
+import { useState, useEffect, FC, useCallback, useMemo } from 'react';
 import { Box, Typography, Paper, Grid } from '@mui/material';
-import { getWeek, parse, lastDayOfISOWeek, eachDayOfInterval, format } from 'date-fns';
+import { getWeek, parse, lastDayOfISOWeek, eachDayOfInterval, format, formatISO, addHours } from 'date-fns';
 import axios from 'axios';
 import { dayAndTimeToISO } from 'utils/dayAndTimeToISO';
 import { DateNav } from './DateNav/DateNav';
 import AddEventModal from './AddEventModal/AddEventModal';
+import { HOURS_ARR } from '../../config/hoursMap';
 import { getCurrentWeek } from './utils/getCurrentWeek';
-import { EventBadge } from './components/EventBadge';
-
-type DateISO = {
-  day: {
-    date: string;
-    name: string;
-  };
-  hours: string[];
-};
 
 export type Event = {
   startDate: string;
@@ -24,14 +16,17 @@ export type Event = {
 };
 
 const Calendar: FC = () => {
-  const [currentWeek, setCurrentWeek] = useState<DateISO[]>([]);
   const [startDate, setStartDate] = useState(new Date());
   const [events, setEvents] = useState<Event[]>([]);
   const [openModal, setOpenModal] = useState(false);
-  const [selectedDateTime, setSelectedDateTime] = useState<{ date: string; hour: string } | null>(null);
+  const [eventStartDate, setEventStartDate] = useState('');
 
-  const handleHourClick = (date: string, hour: string) => {
-    setSelectedDateTime({ date, hour });
+  const currentWeek = useMemo(() => getCurrentWeek(startDate), [startDate]);
+
+  const handleHourClick = (date: Date, hour: number) => {
+    const isoEventStartDate = formatISO(addHours(date, hour));
+    console.log(isoEventStartDate);
+    setEventStartDate(isoEventStartDate);
     setOpenModal(true);
   };
 
@@ -40,23 +35,23 @@ const Calendar: FC = () => {
   }, [setOpenModal]);
 
   useEffect(() => {
-    const currentWeek = getCurrentWeek(startDate);
-    setCurrentWeek(currentWeek);
 
     const fetchEvents = async () => {
-      const startDate = dayAndTimeToISO({ date: currentWeek[0].day.date, hour: '00:00' });
-      const endDate = dayAndTimeToISO({ date: currentWeek[6].day.date, hour: '23:59' });
-      await axios.get(`events?startDate=${startDate}&endDate=${endDate}`)
+      await axios.get(`http://localhost:4000/calendar?startDate=${currentWeek[0]}&endDate=${currentWeek[currentWeek.length - 1]}`)
         .then((res) => {
-        /*
+          console.log(res);
+          /*
         event, ktory dostaniesz z backendu bedziesz mial strukture:
         title, description, startDate, endDate
         */
+          console.log('currentWeek[0]:', currentWeek[0]);
+          console.log('currentWeek[last]:', currentWeek[currentWeek.length - 1]);
 
         }).catch((err) => {
           console.log(err);
         });
     };
+    fetchEvents();
   }, [startDate, closeModal]);
 
   return (
@@ -90,11 +85,11 @@ const Calendar: FC = () => {
         <DateNav startDate={startDate} setStartDate={setStartDate} />
       </Box>
       <Grid container spacing={2} sx={{ width: '90%', maxWidth: '1400px' }}>
-        {currentWeek.map(({ day, hours }) => {
-          const isToday = format(new Date(), 'dd/MM/yyyy') === day.date;
+        {currentWeek.map((day) => {
+          const isToday = format(new Date(), 'dd/MM/yyyy') === format(day, 'dd/MM/yyyy');
 
           return (
-            <Grid item xs={12 / 7} key={day.date}>
+            <Grid item xs={12 / 7} key={day.getDay()}>
               <Paper
                 elevation={3}
                 sx={{
@@ -108,20 +103,19 @@ const Calendar: FC = () => {
                 }}
               >
                 <Typography variant="h5" sx={{ color: isToday ? 'secondary.main' : 'primary.dark', textAlign: 'center', marginBottom: 2 }}>
-                  {day.name}
+                  {format(day, 'EEEE')}
                 </Typography>
                 <Typography variant="h6" sx={{ color: isToday ? 'secondary.main' : 'primary.dark', textAlign: 'center', marginBottom: 2 }}>
-                  {day.date}
+                  {format(day, 'dd/MM/yyyy')}
                 </Typography>
                 <Box sx={{ flex: 1, position: 'relative', marginTop: 2 }}>
-                  {/* <EventBadge hoursLength={hours}/> */}
-                  {hours.map((hour, index) => (
+                  {HOURS_ARR.map(({ label, value }, index) => (
                     <Box
-                      key={hour}
-                      onClick={() => handleHourClick(day.date, hour)}
+                      key={value}
+                      onClick={() => handleHourClick(day, value)}
                       sx={{
                         position: 'relative',
-                        height: `calc(100% / ${hours.length})`,
+                        height: `calc(100% / ${HOURS_ARR.length})`,
                         borderBottom: index < 11 ? '1px solid #ddd' : 'none',
                         cursor: 'pointer',
                         display: 'flex',
@@ -129,11 +123,11 @@ const Calendar: FC = () => {
                         justifyContent: 'space-between',
                         paddingLeft: 5,
                         paddingRight: 5,
-                        // backgroundColor: events.find(
-                        //   (event) => event.date === day.date && event.hour === hour
-                        // )
-                        //   ? '#d3f9d8'
-                        //   : 'transparent',
+                        transition: 'background-color 0.3s ease',
+                        '&:hover': {
+                          backgroundColor: isToday ? 'secondary.light' : 'primary.light',
+                          cursor: 'pointer',
+                        }
                       }}
                     >
                       <Typography
@@ -143,7 +137,7 @@ const Calendar: FC = () => {
                           color: isToday ? '#ffffff' : '#666',
                         }}
                       >
-                        {hour}
+                        {label}
                       </Typography>
                       {/* {events
                         .filter((event) => event.date === day.date && event.hour === hour)
@@ -164,7 +158,10 @@ const Calendar: FC = () => {
           );
         })}
       </Grid>
-      {selectedDateTime && <AddEventModal open={openModal} onClose={closeModal} dateTime={selectedDateTime}/>}
+      {eventStartDate && <AddEventModal open={openModal} onClose={closeModal} dateTime={{
+        date: eventStartDate.split('T')[0],
+        hour: eventStartDate.split('T')[1].slice(0, 5),
+      }}/>}
     </Box>
   );
 };

@@ -1,3 +1,12 @@
-export const getDuration = (startDate: string, endDate: string) => {
-    // na podstawie startDate i endDate musisz tutaj wyliczyc duration, prawdopodobnie przy uzyciu jakiejs wbudowanej funkcji z date-fns
-}
+import { differenceInHours, parseISO } from 'date-fns';
+
+export const getDuration = (startDate: string, endDate: string): number => {
+  try {
+    const start = parseISO(startDate);
+    const end = parseISO(endDate);
+
+    return differenceInHours(end, start);
+  } catch (err) {
+    return 0; // 0 as falsy value
+  }
+};

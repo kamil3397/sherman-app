@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { makeRequest } from 'hooks/makeRequest';
 import { useAlertContext } from 'context/AlertContext';
+import axios from 'axios';
 
 type FormData = {
     name: string,
@@ -44,14 +44,12 @@ const RegistrationPage: FC = () => {
   const onSubmit = async (values: FormData) => {
     const { confirmPassword: _, ...newUserData } = values;
 
-    await makeRequest('POST', '/register', newUserData)
+    await axios.post('http://localhost:4000/register', newUserData)
       .then(() => {
         showSuccessAlert('Registered succesfully');
         navigate('/login');
       })
       .catch((error) => {
-        // tutaj powinnismy ustawiac jakis state np error
-        // a ponizej zrobic, np pod formularzem Mui alert* z tym bledem
         showErrorAlert('Wrong credencials provided');
         const errorMessage = error.response?.data?.message || 'An unexpected error occurred.';
         setError(errorMessage);
@@ -62,7 +60,7 @@ const RegistrationPage: FC = () => {
   return (
     <>
       <Container maxWidth="sm">
-        <Paper elevation={3} sx={{ padding: 4, marginTop: 4 }}>
+        <Paper elevation={3} sx={{ padding: 4, marginTop: 4, backgroundColor: 'primary.dark' }}>
           <Typography variant="h4" align="center" gutterBottom>
                         Register
           </Typography>
@@ -120,7 +118,6 @@ const RegistrationPage: FC = () => {
             <Button type='submit' variant="contained" fullWidth>
                             Register
             </Button>
-            {/* czemu tu musze nadpisac color przez HEX? */}
             <Typography align="center" sx={{ marginTop: 2, mr: 2, color: 'primary.main' }}>
                             Already have an account? <a href="/login">Log in</a>
             </Typography>

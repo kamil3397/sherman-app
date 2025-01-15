@@ -1,14 +1,10 @@
 import { FC, useState } from 'react';
 import { Box, Typography, TextField, Button, Modal } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { makeRequest } from 'hooks/makeRequest';
 import { useAlertContext } from 'context/AlertContext';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import { addHours, format, formatISO, parse } from 'date-fns';
+import { addHours, formatISO, } from 'date-fns';
 import { dayAndTimeToISO } from 'utils/dayAndTimeToISO';
+import axios from 'axios';
 import FormTextField from '../../../components/FormTextField';
 
 type EventModalProps = {
@@ -23,7 +19,6 @@ type EventModalProps = {
 type FormData = {
   title: string;
   description: string;
-  // duration => wyrazone w godzinach
   duration: number;
 };
 
@@ -33,25 +28,20 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
   const { handleSubmit, control } = useForm<FormData>({
     defaultValues: { title: '', description: '', duration: 3 },
   });
-  console.log(dateTime);
 
-  const onSubmit = async (values: FormData) => {
-    /* na podstawie values.duration, musisz tutaj wyliczyc endDate */
-
-    const { duration, ...rest } = values;
+  const onSubmit = async ({ duration, ...values }: FormData) => {
     try {
-      const startDate = dayAndTimeToISO(dateTime);
-      const endDate = format(addHours(new Date(startDate), duration), "yyyy-MM-dd'T'HH:mm:ss");
+      const startDate = new Date(dayAndTimeToISO(dateTime));
+      const endDate = addHours(new Date(startDate), duration);
 
       const body = {
-        ...rest,
+        ...values,
         startDate,
         endDate,
       };
+      console.log(body);
 
-      console.log('body:', body);
-
-      await makeRequest('POST', '/calendar/events/add', body);
+      await axios.post('http://localhost:4000/calendar/events/add', body);
       showSuccessAlert('Event added successfully');
       onClose();
     } catch (err) {
