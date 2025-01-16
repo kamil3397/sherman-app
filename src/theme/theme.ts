@@ -64,11 +64,6 @@ export const theme = createTheme({
       defaultProps: {
         color: 'text.primary',
       },
-      // variants: [
-      //   h1: {
-      //     color: 'text.secondary'
-      //   }
-      // ]
     },
     MuiOutlinedInput: {
       styleOverrides: {
