@@ -40,12 +40,5 @@ export const darkPalette = {
         },
       },
     },
-    // MuiTypography: {
-    //   styleOverrides: {
-    //     root: {
-    //       color: 'rgba(245,245,245, 0.9)', // Domyślny kolor tekstu
-    //     },
-    //   },
-    // },
   },
 };

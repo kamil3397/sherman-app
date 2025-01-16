@@ -12,28 +12,6 @@ export const theme = createTheme({
     }
   },
 
-  // palette: {
-  //   primary: {
-  //     main: '#ADB5BD',
-  //     light: '#DEE2E6',
-  //     dark: '#495057',
-  //     contrastText: '#000000' // recznie zmien na ta wartosc w cardach kalendarza
-  //   },
-  //   secondary: {
-  //     main: '#F3F5F7',
-  //     light: '#F8F9FA',
-  //     dark: '#DAE0E7'
-  //   },
-  //   text: {
-  //     primary: 'rgba(245,245,245, 0.9)',
-  //     secondary: 'rgba(245,245,245, 0.6)',
-  //     disabled: 'rgba(245,245,245, 0.3)',
-  //   },
-  //   background: {
-  //     paper: '#F5F5F5',
-  //     default: '#FFFFFF',
-  //   }
-  // },
   typography: {
     fontFamily: 'Roboto, sans-serif',
     h1: {
