@@ -4,6 +4,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { useAlertContext } from 'context/AlertContext';
 import { useAuthContext } from '../../context/AuthContext';
 
 interface LoginData {
@@ -17,6 +18,7 @@ const schema = yup.object({
 
 const LoginPage: FC = () => {
   const { loginClient } = useAuthContext();
+  const { showSuccessAlert, showErrorAlert } = useAlertContext();
   const { register, handleSubmit, formState: { errors } } = useForm<LoginData>({ resolver: yupResolver(schema) });
   const navigate = useNavigate();
 
@@ -26,10 +28,10 @@ const LoginPage: FC = () => {
 
     await loginClient(userLogin)
       .then(() => {
-        console.log('Successfully logged in');
+        showSuccessAlert('Successfully logged in');
         navigate('/');
       }).catch(() => {
-        console.log('Wrong login or password provided');
+        showErrorAlert('Wrong login or password provided');
       }
       );
 

@@ -1,26 +1,13 @@
 import { AppBar, Toolbar, Box, Typography, Tabs, Tab, Stack } from '@mui/material';
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../images/logoSherman.png';
-import { useAuthContext } from '../context/AuthContext';
 import { ThemeSwitch } from './ThemeSwitch';
 
 export const NavigationBar: FC = () => {
-  const { logoutClient } = useAuthContext();
   const isLoggedIn = localStorage.getItem('accessToken');
   const navigate = useNavigate();
   const [value, setValue] = useState(0);
-
-  const handleLogout = async () => {
-    await logoutClient()
-      .then(() => {
-        console.log('Logout successful');
-        navigate('/');
-      })
-      .catch((error) => {
-        console.log('Error during logout:', error);
-      });
-  };
 
   return (
     <AppBar
@@ -87,7 +74,7 @@ export const NavigationBar: FC = () => {
             <Tab label="Training" component={Link} to="/training" />
             <Tab label="Contact" />
             {isLoggedIn ? (
-              <Tab label="Log out" onClick={handleLogout} />
+              <Tab label="Log out" />
             ) : (
               <Tab label="Join Us!" component={Link} to="/register" />
             )}

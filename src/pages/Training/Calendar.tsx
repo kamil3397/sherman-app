@@ -1,8 +1,7 @@
 import { useState, useEffect, FC, useCallback, useMemo } from 'react';
 import { Box, Typography, Paper, Grid } from '@mui/material';
-import { getWeek, parse, lastDayOfISOWeek, eachDayOfInterval, format, formatISO, addHours } from 'date-fns';
+import { format, formatISO, addHours } from 'date-fns';
 import axios from 'axios';
-import { dayAndTimeToISO } from 'utils/dayAndTimeToISO';
 import { DateNav } from './DateNav/DateNav';
 import AddEventModal from './AddEventModal/AddEventModal';
 import { HOURS_ARR } from '../../config/hoursMap';
@@ -17,7 +16,6 @@ export type Event = {
 
 const Calendar: FC = () => {
   const [startDate, setStartDate] = useState(new Date());
-  const [events, setEvents] = useState<Event[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [eventStartDate, setEventStartDate] = useState('');
 

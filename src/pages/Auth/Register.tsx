@@ -50,7 +50,6 @@ const RegistrationPage: FC = () => {
         navigate('/login');
       })
       .catch((error) => {
-        showErrorAlert('Wrong credencials provided');
         const errorMessage = error.response?.data?.message || 'An unexpected error occurred.';
         setError(errorMessage);
         console.log(error);

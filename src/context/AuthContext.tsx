@@ -32,12 +32,10 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         if (userData && userData.user._id) {
           localStorage.setItem('userId', userData.user._id);
           localStorage.setItem('accessToken', userData.accessToken);
-          showSuccessAlert('Successfully logged in');
           setUser(userData.user);
         } else { console.log('Invalid user data received'); }
       })
       .catch((error) => {
-        showErrorAlert('Wrong login or password provided');
         throw new Error(error);
       });
   };
@@ -47,11 +45,9 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
       .then(() => {
         localStorage.removeItem('userId');
         localStorage.removeItem('accessToken');
-        showSuccessAlert('Successfully logged out');
         setUser(undefined);
       })
       .catch((error) => {
-        showErrorAlert('Error during logout');
         throw new Error('Error during logout:', error);
       });
   };

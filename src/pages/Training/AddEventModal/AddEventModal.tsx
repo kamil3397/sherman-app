@@ -45,7 +45,6 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
       showSuccessAlert('Event added successfully');
       onClose();
     } catch (err) {
-      showErrorAlert('Failed to add the event');
       const errorMessage = (err as any).response?.data?.message || 'An unexpected error occurred.';
       setError(errorMessage);
       console.log(err);
