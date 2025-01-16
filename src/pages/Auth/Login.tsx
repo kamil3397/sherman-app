@@ -12,7 +12,7 @@ interface LoginData {
 }
 const schema = yup.object({
   email: yup.string().email().required('Email is required'),
-  password: yup.string().required('Password is required').min(8, 'Password is too short - should be 8 chars minimum.')
+  password: yup.string().required('Password is required').min(8, 'Password should have minimum of 8 characters')
 });
 
 const LoginPage: FC = () => {
