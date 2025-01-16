@@ -54,7 +54,6 @@ const RegistrationPage: FC = () => {
         setError(errorMessage);
         console.log(error);
       });
-
   };
   return (
     <>

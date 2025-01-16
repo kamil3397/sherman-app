@@ -39,7 +39,6 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         throw new Error(error);
       });
   };
-
   const logoutClient = async () => {
     return axios.post('http://localhost:4000/logout')
       .then(() => {

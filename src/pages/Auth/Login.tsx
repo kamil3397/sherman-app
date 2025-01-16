@@ -77,6 +77,7 @@ const LoginPage: FC = () => {
       </Container>
     </>
   );
+
 };
 
 export default LoginPage;
