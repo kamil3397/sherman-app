@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { MainLayout } from 'layouts';
 import { ToastContainer } from 'react-toastify';
+import Calendar from 'pages/Training/Calendar';
 import { Loader } from 'components/Loader';
 //przerob import na lazy import
 

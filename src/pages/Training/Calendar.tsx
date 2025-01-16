@@ -1,100 +1,167 @@
-import { useState, useEffect, FC } from 'react';
+import { useState, useEffect, FC, useCallback, useMemo } from 'react';
 import { Box, Typography, Paper, Grid } from '@mui/material';
+import { format, formatISO, addHours } from 'date-fns';
+import axios from 'axios';
+import { DateNav } from './DateNav/DateNav';
+import AddEventModal from './AddEventModal/AddEventModal';
+import { HOURS_ARR } from '../../config/hoursMap';
+import { getCurrentWeek } from './utils/getCurrentWeek';
 
-  const Calendar: FC = () => {
-  const [currentWeek, setCurrentWeek] = useState<Date[]>([]);
-  const [today, setToday] = useState<Date>(new Date());
- 
-const generateCurrentWeek=():Date[]=>{
-const today = new Date() //biore sobie dzisiejsza date i godzine 
-const dayOfWeek = today.getDay() //dzisiejszy dzien w formie liczby 0 niedziela 6 sobota
-const monday = new Date(today) // kopia dzisiejszej daty zeby nie zmieniac jej wartosci
-monday.setDate(today.getDate() - ((dayOfWeek+6)%7) ) //biore dzisiejsza date i przesuwam(odejmuje) o 6 dni do poniedzialku
+export type Event = {
+  startDate: string;
+  endDate: string;
+  title: string;
+  description: string;
+};
 
-const week = []
-for (let i=0; i<7; i++){
-const day= new Date(monday)
-day.setDate(monday.getDate()+i) // dodaje do pon reszte dni
-week.push(day)
-}
-return week
-}
+const Calendar: FC = () => {
+  const [startDate, setStartDate] = useState(new Date());
+  const [openModal, setOpenModal] = useState(false);
+  const [eventStartDate, setEventStartDate] = useState('');
 
-useEffect(()=>{
-setCurrentWeek(generateCurrentWeek())
-setToday(new Date())
-}, [])
+  const currentWeek = useMemo(() => getCurrentWeek(startDate), [startDate]);
 
-const formatDate = (date: Date): string => {
-  const day= String(date.getDate()).padStart(2, '0')//jesli ciag znakow <2 to dodaje 0 na poczatku
-  const month= String(date.getMonth()+1).padStart(2, '0')//+1 bo msc w JS sa od 0
-  const year= date.getFullYear()
-  return `${day}/${month}/${year}`
-}
+  const handleHourClick = (date: Date, hour: number) => {
+    const isoEventStartDate = formatISO(addHours(date, hour));
+    console.log(isoEventStartDate);
+    setEventStartDate(isoEventStartDate);
+    setOpenModal(true);
+  };
 
-return(
-  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f5f5f5' }}>
-  <Grid container spacing={2} sx={{ width: '90%', maxWidth: '1400px' }}>
-    {currentWeek.map((date, index) => {
-      const isToday = today.toDateString() === date.toDateString(); // Porównuje, czy data to dziś
+  const closeModal = useCallback(() => {
+    setOpenModal(false);
+  }, [setOpenModal]);
 
-      return (
-        <Grid item xs={12 / 7} key={index}>
-          <Paper
-            elevation={3}
-            sx={{
-              padding: 3,
-              height: '600px',
-              backgroundColor: isToday ? '#444b51' : '#ffffff', 
-              color: isToday ? '#ffffff' : '#000000',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-start',
-              overflow: 'hidden',
-            }}
-          >
-            <Typography variant="h5" sx={{ textAlign: 'center', marginBottom: 2 }}>
-              {date.toLocaleDateString('en-US', { weekday: 'long' })} {/* Nazwa dnia */}
-            </Typography>
-            <Typography variant="h6" sx={{ textAlign: 'center', marginBottom: 2 }}>
-              {formatDate(date)} {/* Data dziś w  moim formacie DD/MM/YYYY */}
-            </Typography>
-            <Box sx={{ flex: 1, position: 'relative', marginTop: 2 }}>
-              {/* Podział godzin */}
-              {[...Array(12)].map((_, hourIndex) => {
-                const hour = 9 + hourIndex; // Godziny od 9:00 do 20:00
-                return (
-                  <Box
-                    key={hour}
-                    sx={{
-                      position: 'relative',
-                      height: '8.33%',
-                      borderBottom: hourIndex < 11 ? '1px solid #ddd' : 'none',
-                    }}
-                  >
-                    <Typography
-                      variant="caption"
+  useEffect(() => {
+
+    const fetchEvents = async () => {
+      await axios.get(`http://localhost:4000/calendar?startDate=${currentWeek[0]}&endDate=${currentWeek[currentWeek.length - 1]}`)
+        .then((res) => {
+          console.log(res);
+          /*
+        event, ktory dostaniesz z backendu bedziesz mial strukture:
+        title, description, startDate, endDate
+        */
+          console.log('currentWeek[0]:', currentWeek[0]);
+          console.log('currentWeek[last]:', currentWeek[currentWeek.length - 1]);
+
+        }).catch((err) => {
+          console.log(err);
+        });
+    };
+    fetchEvents();
+  }, [startDate, closeModal]);
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        backgroundColor: '#f5f5f5',
+        minHeight: '100vh',
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '90%',
+          maxWidth: '1400px',
+          padding: '10px 20px',
+          backgroundColor: '#ffffff',
+          borderRadius: '8px',
+          boxShadow: '0px 4px 6px rgba(0,0,0,0.1)',
+          marginTop: '20px',
+          marginBottom: '10px',
+        }}
+      >
+        <Typography variant="h6" sx={{ color: 'primary.dark', fontWeight: 'bold' }}>
+          Today: {format(new Date(), 'dd/MM/yyyy')}
+        </Typography>
+        <DateNav startDate={startDate} setStartDate={setStartDate} />
+      </Box>
+      <Grid container spacing={2} sx={{ width: '90%', maxWidth: '1400px' }}>
+        {currentWeek.map((day) => {
+          const isToday = format(new Date(), 'dd/MM/yyyy') === format(day, 'dd/MM/yyyy');
+
+          return (
+            <Grid item xs={12 / 7} key={day.getDay()}>
+              <Paper
+                elevation={3}
+                sx={{
+                  padding: 3,
+                  height: '600px',
+                  backgroundColor: isToday ? 'primary.dark' : 'secondary.main',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start',
+                  overflow: 'hidden',
+                }}
+              >
+                <Typography variant="h5" sx={{ color: isToday ? 'secondary.main' : 'primary.dark', textAlign: 'center', marginBottom: 2 }}>
+                  {format(day, 'EEEE')}
+                </Typography>
+                <Typography variant="h6" sx={{ color: isToday ? 'secondary.main' : 'primary.dark', textAlign: 'center', marginBottom: 2 }}>
+                  {format(day, 'dd/MM/yyyy')}
+                </Typography>
+                <Box sx={{ flex: 1, position: 'relative', marginTop: 2 }}>
+                  {HOURS_ARR.map(({ label, value }, index) => (
+                    <Box
+                      key={value}
+                      onClick={() => handleHourClick(day, value)}
                       sx={{
-                        position: 'absolute',
-                        left: 5,
-                        top: 0,
-                        fontSize: '0.75rem',
-                        color: isToday ? '#ffffff' : '#666',
+                        position: 'relative',
+                        height: `calc(100% / ${HOURS_ARR.length})`,
+                        borderBottom: index < 11 ? '1px solid #ddd' : 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingLeft: 5,
+                        paddingRight: 5,
+                        transition: 'background-color 0.3s ease',
+                        '&:hover': {
+                          backgroundColor: isToday ? 'secondary.light' : 'primary.light',
+                          cursor: 'pointer',
+                        }
                       }}
                     >
-                      {`${hour}:00`}
-                    </Typography>
-                  </Box>
-                );
-              })}
-            </Box>
-          </Paper>
-        </Grid>
-      );
-    })}
-  </Grid>
-</Box>
-)
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontSize: '0.75rem',
+                          color: isToday ? '#ffffff' : '#666',
+                        }}
+                      >
+                        {label}
+                      </Typography>
+                      {/* {events
+                        .filter((event) => event.date === day.date && event.hour === hour)
+                        .map((event, i) => (
+                          <Typography
+                            key={i}
+                            variant="caption"
+                            sx={{ fontSize: '0.75rem', color: '#444' }}
+                          >
+                            {event.title}
+                          </Typography>
+                        ))} */}
+                    </Box>
+                  ))}
+                </Box>
+              </Paper>
+            </Grid>
+          );
+        })}
+      </Grid>
+      {eventStartDate && <AddEventModal open={openModal} onClose={closeModal} dateTime={{
+        date: eventStartDate.split('T')[0],
+        hour: eventStartDate.split('T')[1].slice(0, 5),
+      }}/>}
+    </Box>
+  );
+};
 
-}
 export default Calendar;

@@ -1,13 +1,19 @@
-import { PropsWithChildren } from "react"
-import { AuthProvider } from "./AuthContext"
-import { AlertProvider } from "./AlertContext"
+import { PropsWithChildren } from 'react';
+import { ThemeProvider, useMediaQuery } from '@mui/material';
+import { theme } from 'theme/theme';
+import { AuthProvider } from './AuthContext';
+import { AlertProvider } from './AlertContext';
 
 export const ContextProvider = ({ children }: PropsWithChildren) => {
-    return (
-        <AlertProvider>
-            <AuthProvider>
-            {children}
-            </AuthProvider>
-        </AlertProvider>
-    )
-}
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+  return (
+    <ThemeProvider theme={theme} defaultMode={prefersDarkMode ? 'dark' : 'light'}>
+      <AlertProvider>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+      </AlertProvider>
+    </ThemeProvider>
+  );
+};
