@@ -69,7 +69,6 @@ const Calendar: FC = () => {
           alignItems: 'center',
           width: '90%',
           maxWidth: '1400px',
-          padding: '10px 20px',
           backgroundColor: '#ffffff',
           borderRadius: '8px',
           boxShadow: '0px 4px 6px rgba(0,0,0,0.1)',
@@ -77,9 +76,7 @@ const Calendar: FC = () => {
           marginBottom: '10px',
         }}
       >
-        <Typography variant="h6" sx={{ color: 'primary.dark', fontWeight: 'bold' }}>
-          Today: {format(new Date(), 'dd/MM/yyyy')}
-        </Typography>
+
         <DateNav startDate={startDate} setStartDate={setStartDate} />
       </Box>
       <Grid container spacing={2} sx={{ width: '90%', maxWidth: '1400px' }}>
