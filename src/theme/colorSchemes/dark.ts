@@ -1,13 +1,13 @@
 export const darkPalette = {
   primary: {
-    main: '#212529',
-    light: '#DEE2E6',
-    dark: '#495057',
+    main: '#262A2E',
+    light: '#6C757D',
+    dark: '#212529',
   },
   secondary: {
-    main: '#F3F5F7',
+    main: '#DEE2E5',
     light: '#F8F9FA',
-    dark: '#DAE0E7'
+    dark: '#C4C9CE'
   },
   text: {
     primary: 'rgba(245,245,245, 0.9)',
@@ -24,7 +24,7 @@ export const darkPalette = {
             borderColor: 'rgba(245,245,245, 0.3)', // Ramka
           },
           '&.Mui-focused fieldset': {
-            borderColor: '#ADB5BD', // Ramka po fokusie
+            borderColor: 'secondary.main', // Ramka po fokusie
           },
         },
       },

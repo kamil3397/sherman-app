@@ -1,13 +1,13 @@
 export const lightPalette = {
   primary: {
-    main: '#CED4DA',
-    light: '#E9ECEF',
+    main: '#e9ecef',
+    light: '#f8f9fa',
     dark: '#ADB5BD',
   },
   secondary: {
-    main: '#6C757D',
-    light: '#DEE2E6',
-    dark: '#495057',
+    main: '#495057',
+    light: '#ADB5BD',
+    dark: '#343A40',
   },
   text: {
     primary: 'rgba(0, 0, 0, 0.87)',

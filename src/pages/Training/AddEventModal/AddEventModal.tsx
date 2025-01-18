@@ -60,7 +60,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
           left: '50%',
           transform: 'translate(-50%, -50%)',
           width: 400,
-          bgcolor: '#fff',
+          bgcolor: 'secondary.light',
           boxShadow: 24,
           p: 4,
           borderRadius: 2,
@@ -91,10 +91,10 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
               variant="contained"
               type="submit"
               sx={{
-                backgroundColor: '#444b51',
-                color: '#ffffff',
+                backgroundColor: 'primary.dark',
+                color: 'secondary.main',
                 '&:hover': {
-                  backgroundColor: '#3b4045',
+                  backgroundColor: 'primary.main',
                 },
               }}
             >

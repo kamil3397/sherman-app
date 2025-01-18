@@ -59,7 +59,7 @@ const RegistrationPage: FC = () => {
     <>
       <Container maxWidth="sm">
         <Paper elevation={3} sx={{ padding: 4, marginTop: 4, backgroundColor: 'primary.dark' }}>
-          <Typography variant="h4" align="center" gutterBottom>
+          <Typography variant="h4" align="center" gutterBottom color='text.primary'>
                         Register
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>

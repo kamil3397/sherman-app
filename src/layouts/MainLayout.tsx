@@ -12,7 +12,7 @@ export const MainLayout: FC = () => {
       }}
     >
       <NavigationBar />
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, backgroundColor: '#262A2E' }}>
         <Outlet />
       </div>
       <Footer />

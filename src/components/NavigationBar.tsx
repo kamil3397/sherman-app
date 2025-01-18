@@ -13,7 +13,7 @@ export const NavigationBar: FC = () => {
     <AppBar
       position="static"
       sx={{
-        bgcolor: 'primary.dark',
+        backgroundColor: 'primary.dark',
         boxShadow: 'none',
         borderBottom: '1px solid',
         borderColor: 'divider',
