@@ -113,11 +113,11 @@ const RegistrationPage: FC = () => {
             </Box>
             <FormControl/>
 
-            <Button type='submit' variant="contained" fullWidth>
+            <Button type='submit' variant="contained" fullWidth sx={{ backgroundColor: 'primary.light' }}>
                             Register
             </Button>
-            <Typography align="center" sx={{ marginTop: 2, mr: 2, color: 'primary.main' }}>
-                            Already have an account? <a href="/login">Log in</a>
+            <Typography align="center" sx={{ marginTop: 2, mr: 2, color: 'text.primary' }}>
+                            Already have an account? <a style={{ color: 'inherit' }} href="/login">Log in</a>
             </Typography>
             {error && (<Alert severity='error'><AlertTitle>Error</AlertTitle>{error}</Alert>)}
           </form>

@@ -85,6 +85,7 @@ const Calendar: FC = () => {
       <Grid container spacing={2} sx={{ width: '90%', maxWidth: '1400px' }}>
         {currentWeek.map((day) => {
           const isToday = format(new Date(), 'dd/MM/yyyy') === format(day, 'dd/MM/yyyy');
+          console.log(`Day: ${format(day, 'dd/MM/yyyy')} | isToday: ${isToday}`);
 
           return (
             <Grid item xs={12 / 7} key={day.getDay()}>
