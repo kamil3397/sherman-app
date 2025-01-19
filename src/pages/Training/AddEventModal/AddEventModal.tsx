@@ -1,11 +1,15 @@
 import { FC, useState } from 'react';
-import { Box, Typography, TextField, Button, Modal } from '@mui/material';
+import { Box, Typography, Button, Modal, Stack, Autocomplete, TextField, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import CreateIcon from '@mui/icons-material/Create';
+import PeopleIcon from '@mui/icons-material/People';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import SubjectIcon from '@mui/icons-material/Subject';
 import { useForm, Controller } from 'react-hook-form';
-import { useAlertContext } from 'context/AlertContext';
-import { addHours, formatISO, } from 'date-fns';
-import { dayAndTimeToISO } from 'utils/dayAndTimeToISO';
+import { addHours } from 'date-fns';
 import axios from 'axios';
-import FormTextField from '../../../components/FormTextField';
+import { useAlertContext } from 'context/AlertContext';
+import { dayAndTimeToISO } from 'utils/dayAndTimeToISO';
 
 type EventModalProps = {
   open: boolean;
@@ -13,20 +17,38 @@ type EventModalProps = {
   dateTime: {
     date: string;
     hour: string;
-  }
+  };
+};
+
+type Guest = {
+  id: string;
+  name: string;
 };
 
 type FormData = {
   title: string;
   description: string;
   duration: number;
+  guests: Guest[];
 };
 
 const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
   const [error, setError] = useState<string | null>(null);
-  const { showSuccessAlert, showErrorAlert } = useAlertContext();
+  const { showSuccessAlert } = useAlertContext();
+
+  const guestsList: Guest[] = [
+    { id: '1', name: 'Jan Kowalski' },
+    { id: '2', name: 'Anna Nowak' },
+    { id: '3', name: 'Kamil Kamiński' },
+  ];
+
   const { handleSubmit, control } = useForm<FormData>({
-    defaultValues: { title: '', description: '', duration: 3 },
+    defaultValues: {
+      title: '',
+      description: '',
+      duration: 1,
+      guests: [],
+    },
   });
 
   const onSubmit = async ({ duration, ...values }: FormData) => {
@@ -39,7 +61,6 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
         startDate,
         endDate,
       };
-      console.log(body);
 
       await axios.post('http://localhost:4000/calendar/events/add', body);
       showSuccessAlert('Event added successfully');
@@ -47,7 +68,6 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
     } catch (err) {
       const errorMessage = (err as any).response?.data?.message || 'An unexpected error occurred.';
       setError(errorMessage);
-      console.log(err);
     }
   };
 
@@ -62,46 +82,125 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
           width: 400,
           bgcolor: '#fff',
           boxShadow: 24,
-          p: 4,
-          borderRadius: 2,
-        }}
+          p: 3,
+          borderRadius: 2,        }}
       >
-        <Typography variant="h6" sx={{ color: 'primary.dark', mb: 2 }}>
-          Dodaj wydarzenie na {dateTime.date} o {dateTime.hour}
-        </Typography>
+        <IconButton
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            color: 'primary.main',
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <Stack direction="column" spacing={0.5} mb={2}>
+          <Typography variant="body2" sx={{ color: 'primary.main' }}>
+            {`${dateTime.date}, ${dateTime.hour}`}
+          </Typography>
+          <Typography variant="h6" sx={{ color: 'primary.main' }}>
+            Dodaj wydarzenie
+          </Typography>
+        </Stack>
+
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormTextField
-            name="title"
-            control={control}
-            label="Tytuł"
-          />
-          <FormTextField
-            name="description"
-            control={control}
-            label="Opis"
-          />
-          <FormTextField
-            name="duration"
-            control={control}
-            label="Czas trwania (godziny)"
-            type = 'number'
-          />
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button
-              variant="contained"
-              type="submit"
-              sx={{
-                backgroundColor: '#444b51',
-                color: '#ffffff',
-                '&:hover': {
-                  backgroundColor: '#3b4045',
-                },
-              }}
-            >
-              Zapisz
-            </Button>
-          </Box>
+          <Stack spacing={2}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <CreateIcon sx={{ color: 'primary.dark' }} />
+              <Controller
+                name="title"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="Tytuł"
+                    value={field.value}
+                    onChange={field.onChange}
+                    fullWidth
+                  />
+                )}
+              />
+            </Stack>
+            <Stack direction="row" spacing={1} alignItems="flex-start">
+              <SubjectIcon sx={{ color: 'primary.dark', mt: 1 }} />
+              <Controller
+                name="description"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="Opis"
+                    multiline
+                    rows={2}
+                    value={field.value}
+                    onChange={field.onChange}
+                    fullWidth
+                  />
+                )}
+              />
+            </Stack>
+
+            <Stack direction="row" spacing={1} alignItems="center">
+              <PeopleIcon sx={{ color: 'primary.dark' }} />
+              <Controller
+                name="guests"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Autocomplete
+                    multiple
+                    options={guestsList}
+                    getOptionLabel={(option) => option.name}
+                    value={value}
+                    onChange={(_, newValue) => onChange(newValue)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Dodaj gości"
+                        placeholder="Wybierz..."
+                        fullWidth
+                      />
+                    )}
+                    sx={{ flex: 1 }}
+                  />
+                )}
+              />
+            </Stack>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <AccessTimeIcon sx={{ color: 'primary.dark' }} />
+              <Controller
+                name="duration"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="Czas trwania (w godzinach)"
+                    type="number"
+                    value={field.value}
+                    onChange={field.onChange}
+                    fullWidth
+                  />
+                )}
+              />
+            </Stack>
+
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                variant="contained"
+                type="submit"
+                sx={{
+                  backgroundColor: 'primary.dark',
+                  color: '#ffffff',
+                  '&:hover': {
+                    backgroundColor: 'primary.main',
+                  },
+                }}
+              >
+                Zapisz
+              </Button>
+            </Box>
+          </Stack>
         </form>
+
         {error && (
           <Typography color="error" variant="body2" sx={{ mt: 2 }}>
             {error}
@@ -113,3 +212,281 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
 };
 
 export default AddEventModal;
+
+// import { FC, useState } from 'react';
+// import { Box, Typography, Button, Modal, Stack, Autocomplete, TextField, IconButton } from '@mui/material';
+// import CloseIcon from '@mui/icons-material/Close';
+// import CreateIcon from '@mui/icons-material/Create';
+// import PeopleIcon from '@mui/icons-material/People';
+// import AccessTimeIcon from '@mui/icons-material/AccessTime';
+// import SubjectIcon from '@mui/icons-material/Subject';
+// import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+// import { useForm, Controller } from 'react-hook-form';
+// import { addHours } from 'date-fns';
+// import axios from 'axios';
+// import { useAlertContext } from 'context/AlertContext';
+// import { dayAndTimeToISO } from 'utils/dayAndTimeToISO';
+
+// type EventModalProps = {
+//   open: boolean;
+//   onClose: () => void;
+//   dateTime: {
+//     date: string; // np. "2025-01-19"
+//     hour: string; // np. "14:30"
+//   };
+// };
+
+// type Guest = {
+//   id: string;
+//   name: string;
+// };
+
+// // Rozszerzamy FormData o date i hour,
+// // aby można było je modyfikować w formularzu
+// type FormData = {
+//   title: string;
+//   description: string;
+//   duration: number;
+//   guests: Guest[];
+//   date: string;
+//   hour: string;
+// };
+
+// const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
+//   const [error, setError] = useState<string | null>(null);
+//   const { showSuccessAlert } = useAlertContext();
+
+//   const guestsList: Guest[] = [
+//     { id: '1', name: 'Jan Kowalski' },
+//     { id: '2', name: 'Anna Nowak' },
+//     { id: '3', name: 'Kamil Kamiński' },
+//   ];
+
+//   // Ustawiamy w formularzu jako domyślną datę/godzinę to, co przychodzi z props dateTime.
+//   const { handleSubmit, control } = useForm<FormData>({
+//     defaultValues: {
+//       title: '',
+//       description: '',
+//       duration: 1,
+//       guests: [],
+//       date: dateTime.date,
+//       hour: dateTime.hour
+//     },
+//   });
+
+//   const onSubmit = async ({ date, hour, duration, ...values }: FormData) => {
+//     try {
+//       // składamy startDate w formacie ISO z wybranej w formularzu daty i godziny
+//       const startDate = new Date(dayAndTimeToISO({ date, hour }));
+//       // koniec eventu = start plus duration godzin
+//       const endDate = addHours(startDate, duration);
+
+//       const body = {
+//         ...values,
+//         startDate,
+//         endDate,
+//       };
+
+//       await axios.post('http://localhost:4000/calendar/events/add', body);
+//       showSuccessAlert('Event added successfully');
+//       onClose();
+//     } catch (err) {
+//       const errorMessage =
+//         (err as any).response?.data?.message || 'An unexpected error occurred.';
+//       setError(errorMessage);
+//       console.error(err);
+//     }
+//   };
+
+//   return (
+//     <Modal open={open} onClose={onClose}>
+//       <Box
+//         sx={{
+//           position: 'absolute',
+//           top: '50%',
+//           left: '50%',
+//           transform: 'translate(-50%, -50%)',
+//           width: 400,
+//           bgcolor: '#fff',
+//           boxShadow: 24,
+//           p: 3,
+//           borderRadius: 2,        }}
+//       >
+//         {/* Przycisk X w prawym górnym rogu */}
+//         <IconButton
+//           onClick={onClose}
+//           sx={{
+//             position: 'absolute',
+//             top: 8,
+//             right: 8,
+//             color: 'primary.main',
+//           }}
+//         >
+//           <CloseIcon />
+//         </IconButton>
+
+//         {/* Nagłówek */}
+//         <Stack direction="column" spacing={0.5} mb={2}>
+//           <Typography variant="body2" sx={{ color: 'primary.main' }}>
+//             {`${dateTime.date}, ${dateTime.hour}`}
+//           </Typography>
+//           <Typography variant="h6" sx={{ color: 'primary.main' }}>
+//             Dodaj wydarzenie
+//           </Typography>
+//         </Stack>
+
+//         <form onSubmit={handleSubmit(onSubmit)}>
+//           <Stack spacing={2}>
+//             {/* Tytuł */}
+//             <Stack direction="row" alignItems="center" spacing={1}>
+//               <CreateIcon sx={{ color: 'primary.dark' }} />
+//               <Controller
+//                 name="title"
+//                 control={control}
+//                 render={({ field }) => (
+//                   <TextField
+//                     label="Tytuł"
+//                     fullWidth
+//                     value={field.value}
+//                     onChange={field.onChange}
+//                   />
+//                 )}
+//               />
+//             </Stack>
+
+//             {/* Zmiana daty wydarzenia */}
+//             <Stack direction="row" alignItems="center" spacing={1}>
+//               <CalendarMonthIcon sx={{ color: 'primary.dark' }} />
+//               <Controller
+//                 name="date"
+//                 control={control}
+//                 render={({ field }) => (
+//                   <TextField
+//                     label="Data"
+//                     type="date"
+//                     fullWidth
+//                     value={field.value}
+//                     onChange={field.onChange}
+//                     InputLabelProps={{
+//                       shrink: true, // label przenosi się ponad wartość
+//                     }}
+//                   />
+//                 )}
+//               />
+//             </Stack>
+
+//             {/* Zmiana godziny wydarzenia */}
+//             <Stack direction="row" alignItems="center" spacing={1}>
+//               <AccessTimeIcon sx={{ color: 'primary.dark' }} />
+//               <Controller
+//                 name="hour"
+//                 control={control}
+//                 render={({ field }) => (
+//                   <TextField
+//                     label="Godzina"
+//                     type="time"
+//                     fullWidth
+//                     value={field.value}
+//                     onChange={field.onChange}
+//                     InputLabelProps={{
+//                       shrink: true,
+//                     }}
+//                   />
+//                 )}
+//               />
+//             </Stack>
+
+//             {/* Goście */}
+//             <Stack direction="row" alignItems="center" spacing={1}>
+//               <PeopleIcon sx={{ color: 'primary.dark' }} />
+//               <Controller
+//                 name="guests"
+//                 control={control}
+//                 render={({ field: { onChange, value } }) => (
+//                   <Autocomplete
+//                     multiple
+//                     sx={{ flex: 1 }}
+//                     options={guestsList}
+//                     getOptionLabel={(option) => option.name}
+//                     value={value}
+//                     onChange={(_, newValue) => onChange(newValue)}
+//                     renderInput={(params) => (
+//                       <TextField
+//                         {...params}
+//                         label="Dodaj gości"
+//                         placeholder="Wybierz..."
+//                       />
+//                     )}
+//                   />
+//                 )}
+//               />
+//             </Stack>
+
+//             {/* Opis */}
+//             <Stack direction="row" alignItems="flex-start" spacing={1}>
+//               <SubjectIcon sx={{ color: 'primary.dark', mt: 1 }} />
+//               <Controller
+//                 name="description"
+//                 control={control}
+//                 render={({ field }) => (
+//                   <TextField
+//                     label="Opis"
+//                     multiline
+//                     rows={2}
+//                     fullWidth
+//                     value={field.value}
+//                     onChange={field.onChange}
+//                   />
+//                 )}
+//               />
+//             </Stack>
+
+//             {/* Czas trwania (w godzinach) */}
+//             <Stack direction="row" alignItems="center" spacing={1}>
+//               <AccessTimeIcon sx={{ color: 'primary.dark' }} />
+//               <Controller
+//                 name="duration"
+//                 control={control}
+//                 render={({ field }) => (
+//                   <TextField
+//                     label="Czas trwania (w godzinach)"
+//                     type="number"
+//                     fullWidth
+//                     value={field.value}
+//                     onChange={field.onChange}
+//                   />
+//                 )}
+//               />
+//             </Stack>
+
+//             {/* Przyciski akcji */}
+//             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+//               <Button
+//                 variant="contained"
+//                 type="submit"
+//                 sx={{
+//                   backgroundColor: 'primary.dark',
+//                   color: '#ffffff',
+//                   '&:hover': {
+//                     backgroundColor: 'primary.main',
+//                   },
+//                 }}
+//               >
+//                 Zapisz
+//               </Button>
+//             </Box>
+//           </Stack>
+//         </form>
+
+//         {/* Obsługa błędów */}
+//         {error && (
+//           <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+//             {error}
+//           </Typography>
+//         )}
+//       </Box>
+//     </Modal>
+//   );
+// };
+
+// export default AddEventModal;
