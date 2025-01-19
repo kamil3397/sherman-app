@@ -40,8 +40,8 @@ const LoginPage: FC = () => {
   return (
     <>
       <Container maxWidth="sm">
-        <Paper elevation={3} sx={{ padding: 4, marginTop: 4 }}>
-          <Typography variant="h4" align="center" gutterBottom>
+        <Paper elevation={3} sx={{ padding: 4, marginTop: 4, backgroundColor: 'primary.dark' }}>
+          <Typography variant="h4" align="center" gutterBottom  color='text.primary'>
                         Login
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -65,11 +65,11 @@ const LoginPage: FC = () => {
                 helperText={!!errors.password && errors.password.message}
               />
             </Box>
-            <Button variant="contained" fullWidth type='submit'>
+            <Button variant="contained" fullWidth type='submit' sx={{ backgroundColor: 'primary.light' }}>
                             Log In
             </Button>
-            <Typography align="center" sx={{ marginTop: 2, color: '#495057' }}>
-                            Don't have an account? <a href="/register">Register</a>
+            <Typography align="center" sx={{ marginTop: 2, color: 'text.primary' }}>
+                            Don't have an account? <a style={{ color: 'inherit' }} href="/register">Register</a>
             </Typography>
             <FormControl/>
           </form>

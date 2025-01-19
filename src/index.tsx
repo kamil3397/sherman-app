@@ -48,3 +48,5 @@ cherryPick?????
   JESLI PR BEDZIE ZAWIERAC ZMIANY Z PR POPRZEDNIEJ TO NIE SPRAWDZAM, A JAK DO LEKCJI NIE BEDA ROZBITE NA DWIE NIEZALEZNE
   TO ROBIMY SOBIE NA LEKCJI :)
 */
+
+// ? nie moge ustawic tła w register jest jedno na sztywno

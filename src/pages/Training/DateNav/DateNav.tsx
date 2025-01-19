@@ -25,7 +25,7 @@ export const DateNav: FC<DateNavProps> = ({ startDate, setStartDate }) => {
       alignItems="center"
       sx={{
         width: '100%',
-        backgroundColor: 'primary.light',
+        backgroundColor: 'primary.dark',
         padding: '10px 20px',
         borderRadius: '8px',
         boxShadow: '0px 4px 6px rgba(0,0,0,0.1)',
@@ -35,22 +35,22 @@ export const DateNav: FC<DateNavProps> = ({ startDate, setStartDate }) => {
         onClick={setPreviousWeek}
         variant="contained"
         sx={{
-          backgroundColor: 'primary.dark',
-          color: 'text.primary',
+          backgroundColor: 'secondary.dark',
+          color: 'primary.dark',
           '&:hover': { backgroundColor: '#333b41' },
         }}
       >
         Previous Week
       </Button>
-      <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.dark' }}>
+      <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'secondary.dark' }}>
         {`Today: ${format(new Date(), 'dd/MM/yyyy')}`}
       </Typography>
       <Button
         onClick={setNextWeek}
         variant="contained"
         sx={{
-          backgroundColor: 'primary.dark',
-          color: 'text.primary',
+          backgroundColor: 'secondary.dark',
+          color: 'primary.dark',
           '&:hover': { backgroundColor: '#333b41' },
         }}
       >

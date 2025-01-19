@@ -4,8 +4,8 @@ import { FC } from 'react';
 
 export const NewsSection: FC = () => {
   return (
-    <Box sx={{ py: 4, px: 2 }}>
-      <Typography variant="h4" align="center" gutterBottom>
+    <Box sx={{ py: 4, px: 2, bgcolor: 'primary.light' }}>
+      <Typography variant="h4" align="center" gutterBottom color='primary.dark'>
                 Latest News
       </Typography>
       <Grid container spacing={4} justifyContent="center">
