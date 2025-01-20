@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { Box, TextField, Button, Typography, Container, Paper, FormControl, Alert, AlertTitle } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -117,7 +117,7 @@ const RegistrationPage: FC = () => {
                             Register
             </Button>
             <Typography align="center" sx={{ marginTop: 2, mr: 2, color: 'text.primary' }}>
-                            Already have an account? <a style={{ color: 'inherit' }} href="/login">Log in</a>
+                            Already have an account? <Link style={{ color: 'inherit' }} to="/login">Log in</Link>
             </Typography>
             {error && (<Alert severity='error'><AlertTitle>Error</AlertTitle>{error}</Alert>)}
           </form>

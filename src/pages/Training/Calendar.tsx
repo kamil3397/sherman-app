@@ -133,7 +133,7 @@ const Calendar: FC = () => {
                         variant="caption"
                         sx={{
                           fontSize: '0.75rem',
-                          color: isToday ? '#666' : '#ffffff',
+                          color: isToday ? 'primary.light' : 'text.primary',
                         }}
                       >
                         {label}
