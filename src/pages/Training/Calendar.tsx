@@ -120,7 +120,7 @@ const Calendar: FC = () => {
                         paddingRight: 5,
                         transition: 'background-color 0.3s ease',
                         '&:hover': {
-                          backgroundColor: isToday ? 'secondary.light' : 'primary.light',
+                          backgroundColor: isToday ? 'primary.main' : 'primary.light',
                           cursor: 'pointer',
                         }
                       }}
