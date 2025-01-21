@@ -10,6 +10,7 @@ import { addHours } from 'date-fns';
 import axios from 'axios';
 import { useAlertContext } from 'context/AlertContext';
 import { dayAndTimeToISO } from 'utils/dayAndTimeToISO';
+import FormTextField from 'components/FormTextField';
 
 type EventModalProps = {
   open: boolean;
@@ -30,6 +31,8 @@ type FormData = {
   description: string;
   duration: number;
   guests: Guest[];
+  time: string;
+  date: string;
 };
 
 const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
@@ -83,7 +86,8 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
           bgcolor: '#fff',
           boxShadow: 24,
           p: 3,
-          borderRadius: 2,        }}
+          borderRadius: 2
+        }}
       >
         <IconButton
           onClick={onClose}
@@ -110,34 +114,21 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
           <Stack spacing={2}>
             <Stack direction="row" spacing={1} alignItems="center">
               <CreateIcon sx={{ color: 'primary.dark' }} />
-              <Controller
+              <FormTextField
                 name="title"
                 control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="Tytuł"
-                    value={field.value}
-                    onChange={field.onChange}
-                    fullWidth
-                  />
-                )}
+                label="Tytuł"
               />
             </Stack>
+
             <Stack direction="row" spacing={1} alignItems="flex-start">
               <SubjectIcon sx={{ color: 'primary.dark', mt: 1 }} />
-              <Controller
+              <FormTextField
                 name="description"
                 control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="Opis"
-                    multiline
-                    rows={2}
-                    value={field.value}
-                    onChange={field.onChange}
-                    fullWidth
-                  />
-                )}
+                label="Opis"
+                multiline
+                rows={2}
               />
             </Stack>
 
@@ -166,17 +157,45 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
                 )}
               />
             </Stack>
+
+            <Stack direction="row" spacing={1} alignItems="center">
+              <AccessTimeIcon sx={{ color: 'primary.dark' }} />
+              <FormTextField
+                name="duration"
+                control={control}
+                label="Czas trwania (w godzinach)"
+                type="number"
+              />
+            </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
               <AccessTimeIcon sx={{ color: 'primary.dark' }} />
               <Controller
-                name="duration"
+                name="date"
                 control={control}
                 render={({ field }) => (
                   <TextField
-                    label="Czas trwania (w godzinach)"
-                    type="number"
-                    value={field.value}
-                    onChange={field.onChange}
+                    {...field}
+                    label="Data"
+                    type="date"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    fullWidth
+                  />
+                )}
+              />
+            </Stack>
+
+            <Stack direction="row" spacing={1} alignItems="center">
+              <AccessTimeIcon sx={{ color: 'primary.dark' }} />
+              <Controller
+                name="time"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Godzina"
+                    type="time"
                     fullWidth
                   />
                 )}
