@@ -21,8 +21,9 @@ const instagramPosts = [
 
 export const InstagramSection: FC = () => {
   return (
-    <Box sx={{ py: 4, px: 2, backgroundColor: '#f5f5f5' }}>
-      <Typography variant="h4" align="center" gutterBottom>
+    <Box sx={{ py: 4, px: 2, backgroundColor: 'primary.light',
+    }}>
+      <Typography variant="h4" align="center" gutterBottom color='primary.dark'>
                 From Instagram
       </Typography>
       <Grid container spacing={2} justifyContent="center">

@@ -12,7 +12,7 @@ export const Footer: FC = () => {
       }}
     >
       <Typography variant="body2">
-                © {new Date().getFullYear()} Sherman Shooting Team. All Rights Reserved.
+        © {new Date().getFullYear()} Sherman Shooting Team. All Rights Reserved.
       </Typography>
     </Box>
   );
