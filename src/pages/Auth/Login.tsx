@@ -3,7 +3,7 @@ import { Box, TextField, Button, Typography, Container, Paper, FormControl } fro
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAlertContext } from 'context/AlertContext';
 import { useAuthContext } from '../../context/AuthContext';
 
@@ -40,7 +40,7 @@ const LoginPage: FC = () => {
   return (
     <>
       <Container maxWidth="sm">
-        <Paper elevation={3} sx={{ padding: 4, marginTop: 4 }}>
+        <Paper elevation={3} sx={{ padding: 4, marginTop: 4, backgroundColor: 'primary.dark' }}>
           <Typography variant="h4" align="center" gutterBottom>
                         Login
           </Typography>
@@ -65,11 +65,12 @@ const LoginPage: FC = () => {
                 helperText={!!errors.password && errors.password.message}
               />
             </Box>
-            <Button variant="contained" fullWidth type='submit'>
+            <Button variant="contained" fullWidth type='submit' sx={{ backgroundColor: 'primary.light' }}>
                             Log In
             </Button>
-            <Typography align="center" sx={{ marginTop: 2, color: '#495057' }}>
-                            Don't have an account? <a href="/register">Register</a>
+            <Typography align="center" sx={{ marginTop: 2 }}>
+                            Don't have an account? <Link style={{ color: 'inherit' }} to="/register">Register</Link>
+
             </Typography>
             <FormControl/>
           </form>

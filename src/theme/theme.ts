@@ -87,7 +87,7 @@ export const theme = createTheme({
         root: {
           color: 'rgba(0, 0, 0, 0.6)', // Kolor etykiety domyślnym
           '&.Mui-focused': {
-            color: 'rgba(0, 0, 0, 0.87)', // Kolor etykiety w fokusie
+            color: 'rgba(0, 0, 0, 9)', // Kolor etykiety w fokusie
           },
         },
       },
@@ -99,7 +99,17 @@ export const theme = createTheme({
           color: 'primary.main',
         },
       },
-    }
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          color: 'text.primary', // Domyślny kolor linku
+          '&:visited': {
+            color: '#ccc', // Kolor linku po kliknięciu
+          },
+        },
+      },
+    },
   }
 
 });

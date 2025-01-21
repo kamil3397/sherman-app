@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { Box, TextField, Button, Typography, Container, Paper, FormControl, Alert, AlertTitle } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -59,7 +59,7 @@ const RegistrationPage: FC = () => {
     <>
       <Container maxWidth="sm">
         <Paper elevation={3} sx={{ padding: 4, marginTop: 4, backgroundColor: 'primary.dark' }}>
-          <Typography variant="h4" align="center" gutterBottom>
+          <Typography variant="h4" align="center" gutterBottom color='text.primary'>
                         Register
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -113,11 +113,11 @@ const RegistrationPage: FC = () => {
             </Box>
             <FormControl/>
 
-            <Button type='submit' variant="contained" fullWidth>
+            <Button type='submit' variant="contained" fullWidth sx={{ backgroundColor: 'primary.light' }}>
                             Register
             </Button>
-            <Typography align="center" sx={{ marginTop: 2, mr: 2, color: 'primary.main' }}>
-                            Already have an account? <a href="/login">Log in</a>
+            <Typography align="center" sx={{ marginTop: 2, mr: 2, color: 'text.primary' }}>
+                            Already have an account? <Link style={{ color: 'inherit' }} to="/login">Log in</Link>
             </Typography>
             {error && (<Alert severity='error'><AlertTitle>Error</AlertTitle>{error}</Alert>)}
           </form>

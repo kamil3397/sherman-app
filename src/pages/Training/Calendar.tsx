@@ -58,7 +58,7 @@ const Calendar: FC = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: 'primary.light',
         minHeight: '100vh',
       }}
     >
@@ -82,6 +82,7 @@ const Calendar: FC = () => {
       <Grid container spacing={2} sx={{ width: '90%', maxWidth: '1400px' }}>
         {currentWeek.map((day) => {
           const isToday = format(new Date(), 'dd/MM/yyyy') === format(day, 'dd/MM/yyyy');
+          console.log(`Day: ${format(day, 'dd/MM/yyyy')} | isToday: ${isToday}`);
 
           return (
             <Grid item xs={12 / 7} key={day.getDay()}>
@@ -90,17 +91,17 @@ const Calendar: FC = () => {
                 sx={{
                   padding: 3,
                   height: '600px',
-                  backgroundColor: isToday ? 'primary.dark' : 'secondary.main',
+                  backgroundColor: isToday ? 'secondary.main' : 'primary.dark',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'flex-start',
                   overflow: 'hidden',
                 }}
               >
-                <Typography variant="h5" sx={{ color: isToday ? 'secondary.main' : 'primary.dark', textAlign: 'center', marginBottom: 2 }}>
+                <Typography variant="h5" sx={{ color: isToday ? 'primary.dark' : 'secondary.dark', textAlign: 'center', marginBottom: 2 }}>
                   {format(day, 'EEEE')}
                 </Typography>
-                <Typography variant="h6" sx={{ color: isToday ? 'secondary.main' : 'primary.dark', textAlign: 'center', marginBottom: 2 }}>
+                <Typography variant="h6" sx={{ color: isToday ? 'primary.dark' : 'secondary.main', textAlign: 'center', marginBottom: 2 }}>
                   {format(day, 'dd/MM/yyyy')}
                 </Typography>
                 <Box sx={{ flex: 1, position: 'relative', marginTop: 2 }}>
@@ -120,7 +121,7 @@ const Calendar: FC = () => {
                         paddingRight: 5,
                         transition: 'background-color 0.3s ease',
                         '&:hover': {
-                          backgroundColor: isToday ? 'primary.main' : 'primary.light',
+                          backgroundColor: isToday ? 'primary.light' : 'secondary.light',
                           cursor: 'pointer',
                         }
                       }}
@@ -129,7 +130,7 @@ const Calendar: FC = () => {
                         variant="caption"
                         sx={{
                           fontSize: '0.75rem',
-                          color: isToday ? '#ffffff' : '#666',
+                          color: isToday ? 'primary.light' : 'text.primary',
                         }}
                       >
                         {label}
