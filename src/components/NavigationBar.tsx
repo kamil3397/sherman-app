@@ -8,6 +8,14 @@ export const NavigationBar: FC = () => {
   const isLoggedIn = localStorage.getItem('accessToken');
   const navigate = useNavigate();
   const [value, setValue] = useState(0);
+  const [user, setUser] = useState();
+
+  const handleLogout = () => {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('accessToken');
+    setUser(undefined);
+    navigate('/login');
+  };
 
   return (
     <AppBar
@@ -74,7 +82,7 @@ export const NavigationBar: FC = () => {
             <Tab label="Training" component={Link} to="/training" />
             <Tab label="Contact" />
             {isLoggedIn ? (
-              <Tab label="Log out" />
+              <Tab label="Log out" onClick={handleLogout}/>
             ) : (
               <Tab label="Join Us!" component={Link} to="/register" />
             )}
