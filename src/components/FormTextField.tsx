@@ -8,7 +8,7 @@ type FormTextFieldProps = {
   label: string;
 } & TextFieldProps; // to daje wszystkie funkcjoinalnosci TextField z MUI
 
-const FormTextField: FC<FormTextFieldProps> = ({ name, control, fullWidth = true, ...params }) => (
+export const FormTextField: FC<FormTextFieldProps> = ({ name, control, fullWidth = true, ...params }) => (
   <Controller
     name={name}
     control={control}
@@ -30,4 +30,44 @@ const FormTextField: FC<FormTextFieldProps> = ({ name, control, fullWidth = true
   />
 );
 
-export default FormTextField;
+// https://www.freecodecamp.org/news/typescript-generics-with-functional-react-components/
+// PRZECZYTAC
+// import { TextField, TextFieldProps } from "@mui/material";
+// import {
+//   FieldPath,
+//   FieldValues,
+//   UseControllerProps,
+//   useController,
+// } from "react-hook-form";
+
+// type FormTextfieldProps<
+//   TFieldValues extends FieldValues = FieldValues,
+//   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+// > = UseControllerProps<TFieldValues, TName> & TextFieldProps;
+
+// export const FormTextfield = <
+//   TFieldValues extends FieldValues = FieldValues,
+//   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+// >({
+//   name,
+//   control,
+//   fullWidth = true,
+//   ...props
+// }:
+// FormTextfieldProps<TFieldValues, TName>) => {
+//   const {
+//     fieldState: { error, invalid },
+//     field: { value, onBlur, onChange },
+//   } = useController({ name, control });
+//   return (
+//     <TextField
+//       {...props}
+//       onChange={onChange}
+//       onBlur={onBlur}
+//       value={value !== null ? value : ""}
+//       error={invalid}
+//       fullWidth={fullWidth}
+//       helperText={invalid && error?.message && error.message}
+//     />
+//   );
+// };
