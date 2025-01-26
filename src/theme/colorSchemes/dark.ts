@@ -7,7 +7,7 @@ export const darkPalette = {
   secondary: {
     main: '#DEE2E5',
     light: '#F8F9FA',
-    dark: '#C4C9CE'
+    dark: '#C4C9CE',
   },
   text: {
     primary: 'rgba(245,245,245, 0.9)',
