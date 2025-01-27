@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Box, Typography, Button, Modal, Stack, Autocomplete, TextField, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateIcon from '@mui/icons-material/Create';
@@ -10,7 +10,8 @@ import { addHours } from 'date-fns';
 import axios from 'axios';
 import { useAlertContext } from 'context/AlertContext';
 import { dayAndTimeToISO } from 'utils/dayAndTimeToISO';
-import FormTextField from 'components/FormTextField';
+import { FormAutocomplete, OptionType } from 'components/FormAutocomplete';
+import { FormTextField } from 'components/FormTextField';
 
 type EventModalProps = {
   open: boolean;
@@ -21,29 +22,19 @@ type EventModalProps = {
   };
 };
 
-type Guest = {
-  id: string;
-  name: string;
-};
-
 type FormData = {
   title: string;
   description: string;
   duration: number;
-  guests: Guest[];
+  guests: OptionType[];
   time: string;
   date: string;
 };
 
 const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
   const [error, setError] = useState<string | null>(null);
+  const [guestsOptions, setGuestsOptions] = useState<OptionType[]>([]);
   const { showSuccessAlert } = useAlertContext();
-
-  const guestsList: Guest[] = [
-    { id: '1', name: 'Jan Kowalski' },
-    { id: '2', name: 'Anna Nowak' },
-    { id: '3', name: 'Kamil Kamiński' },
-  ];
 
   const { handleSubmit, control } = useForm<FormData>({
     defaultValues: {
@@ -53,6 +44,26 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
       guests: [],
     },
   });
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/users');
+        // ten endpoint powinien zwracac user'ow w calosci
+        const users = response.data;
+        console.log('usersBeforeMap', users);
+        // trzeba pozbyc sie :any
+        const options = users.map((user: any) => ({
+          value: user._id,
+          label: `${user.name} ${user.lastName}`,
+        }));
+        setGuestsOptions(options);
+      } catch (err) {
+        console.error(err);
+      }
+      fetchUsers();
+    };
+  }, []);
 
   const onSubmit = async ({ duration, ...values }: FormData) => {
     try {
@@ -134,27 +145,11 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
 
             <Stack direction="row" spacing={1} alignItems="center">
               <PeopleIcon sx={{ color: 'primary.dark' }} />
-              <Controller
+              <FormAutocomplete
                 name="guests"
                 control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Autocomplete
-                    multiple
-                    options={guestsList}
-                    getOptionLabel={(option) => option.name}
-                    value={value}
-                    onChange={(_, newValue) => onChange(newValue)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Dodaj gości"
-                        placeholder="Wybierz..."
-                        fullWidth
-                      />
-                    )}
-                    sx={{ flex: 1 }}
-                  />
-                )}
+                label="Goście"
+                options={guestsOptions}
               />
             </Stack>
 
