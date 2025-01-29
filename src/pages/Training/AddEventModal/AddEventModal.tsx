@@ -1,5 +1,14 @@
 import { FC, useEffect, useState } from 'react';
-import { Box, Typography, Button, Modal, Stack, Autocomplete, TextField, IconButton } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  Modal,
+  Stack,
+  Autocomplete,
+  TextField,
+  IconButton,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateIcon from '@mui/icons-material/Create';
 import PeopleIcon from '@mui/icons-material/People';
@@ -77,6 +86,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
       };
 
       await axios.post('http://localhost:4000/calendar/events/add', body);
+      // ten endpoint powinien zwracac user'ow w calosci
       showSuccessAlert('Event added successfully');
       onClose();
     } catch (err) {
@@ -97,7 +107,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
           bgcolor: 'secondary.light',
           boxShadow: 24,
           p: 3,
-          borderRadius: 2
+          borderRadius: 2,
         }}
       >
         <IconButton
@@ -112,14 +122,17 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
           <CloseIcon />
         </IconButton>
 
-        <Stack direction="column" spacing={0.5} mb={2}>
-          <Typography variant="body2" sx={{ color: 'primary.main' }}>
-            {`${dateTime.date}, ${dateTime.hour}`}
-          </Typography>
-          <Typography variant="h6" sx={{ color: 'primary.main' }}>
-            Dodaj wydarzenie
-          </Typography>
-        </Stack>
+        <Typography
+          variant="h6"
+          sx={{
+            mb: 2,
+            fontWeight: 'bold',
+            textAlign: 'center',
+            color: 'primary.main',
+          }}
+        >
+          Dodaj wydarzenie
+        </Typography>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={2}>
@@ -128,40 +141,11 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
               <FormTextField
                 name="title"
                 control={control}
-                label="Tytuł"
+                label="Tytuł wydarzenia"
+                fullWidth
               />
             </Stack>
 
-            <Stack direction="row" spacing={1} alignItems="flex-start">
-              <SubjectIcon sx={{ color: 'primary.dark', mt: 1 }} />
-              <FormTextField
-                name="description"
-                control={control}
-                label="Opis"
-                multiline
-                rows={2}
-              />
-            </Stack>
-
-            <Stack direction="row" spacing={1} alignItems="center">
-              <PeopleIcon sx={{ color: 'primary.dark' }} />
-              <FormAutocomplete
-                name="guests"
-                control={control}
-                label="Goście"
-                options={guestsOptions}
-              />
-            </Stack>
-
-            <Stack direction="row" spacing={1} alignItems="center">
-              <AccessTimeIcon sx={{ color: 'primary.dark' }} />
-              <FormTextField
-                name="duration"
-                control={control}
-                label="Czas trwania (w godzinach)"
-                type="number"
-              />
-            </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
               <AccessTimeIcon sx={{ color: 'primary.dark' }} />
               <Controller
@@ -172,17 +156,10 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
                     {...field}
                     label="Data"
                     type="date"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
                     fullWidth
                   />
                 )}
               />
-            </Stack>
-
-            <Stack direction="row" spacing={1} alignItems="center">
-              <AccessTimeIcon sx={{ color: 'primary.dark' }} />
               <Controller
                 name="time"
                 control={control}
@@ -191,36 +168,60 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
                     {...field}
                     label="Godzina"
                     type="time"
+                    InputLabelProps={{ shrink: true }}
                     fullWidth
                   />
                 )}
               />
             </Stack>
 
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button
-                variant="contained"
-                type="submit"
-                sx={{
-                  backgroundColor: 'primary.dark',
-                  color: '#ffffff',
-                  '&:hover': {
-                    backgroundColor: 'primary.main',
-                  },
-                }}
-              >
-                Zapisz
-              </Button>
-            </Box>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <SubjectIcon sx={{ color: 'primary.dark' }} />
+              <FormTextField
+                name="description"
+                control={control}
+                label="Opis"
+                multiline
+                rows={3}
+                fullWidth
+              />
+            </Stack>
+
+            <Stack direction="row" spacing={1} alignItems="center">
+              <PeopleIcon sx={{ color: 'primary.dark' }} />
+              <FormAutocomplete
+                name="guests"
+                control={control}
+                label="Goście"
+                options={guestsOptions}
+                fullWidth
+              />
+            </Stack>
+
+            <Button
+              variant="contained"
+              type="submit"
+              size="medium"
+              sx={{
+                alignSelf: 'flex-end',
+                mt: 2,
+                backgroundColor: 'primary.dark',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: 'primary.main',
+                },
+              }}
+            >
+              Zapisz
+            </Button>
+
+            {error && (
+              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                {error}
+              </Typography>
+            )}
           </Stack>
-
         </form>
-
-        {error && (
-          <Typography color="error" variant="body2" sx={{ mt: 2 }}>
-            {error}
-          </Typography>
-        )}
       </Box>
     </Modal>
   );
