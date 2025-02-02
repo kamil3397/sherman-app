@@ -40,12 +40,18 @@ type FormData = {
   date: string;
 };
 
+type UserType = {
+  id: string;
+  fullName: string;
+  email: string;
+}
+
 const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
   const [error, setError] = useState<string | null>(null);
   const [guestsOptions, setGuestsOptions] = useState<OptionType[]>([]);
   const { showSuccessAlert } = useAlertContext();
 
-  const { handleSubmit, control } = useForm<FormData>({
+  const { handleSubmit, control, watch } = useForm<FormData>({
     defaultValues: {
       title: '',
       description: '',
@@ -54,24 +60,34 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
     },
   });
 
+  const guests = watch('guests');
+
+  useEffect(() => {
+    /* ogarnac tak, zeby dzialalo tez przy usuwaniu */
+    const fileterdOptions = guestsOptions.filter((option) =>
+      !guests.includes(option)
+    );
+    console.log(fileterdOptions);
+    setGuestsOptions(fileterdOptions);
+  }, [guests]);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/users');
-        // ten endpoint powinien zwracac user'ow w calosci
+        const response = await axios.get<UserType[]>('http://localhost:4000/users');
         const users = response.data;
-        console.log('usersBeforeMap', users);
-        // trzeba pozbyc sie :any
-        const options = users.map((user: any) => ({
-          value: user._id,
-          label: `${user.name} ${user.lastName}`,
+        const options = users.map((user) => ({
+          value: user.id,
+          label: user.fullName,
         }));
         setGuestsOptions(options);
       } catch (err) {
+        // dodac obsluge bledu
         console.error(err);
       }
-      fetchUsers();
     };
+    fetchUsers();
+
   }, []);
 
   const onSubmit = async ({ duration, ...values }: FormData) => {
@@ -148,6 +164,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
 
             <Stack direction="row" spacing={1} alignItems="center">
               <AccessTimeIcon sx={{ color: 'primary.dark' }} />
+              {/* do przerobienia na FormTextfield */}
               <Controller
                 name="date"
                 control={control}
