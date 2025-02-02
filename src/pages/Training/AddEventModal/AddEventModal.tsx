@@ -1,20 +1,11 @@
 import { FC, useEffect, useState } from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  Modal,
-  Stack,
-  Autocomplete,
-  TextField,
-  IconButton,
-} from '@mui/material';
+import { Box, Typography, Button, Modal, Stack, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateIcon from '@mui/icons-material/Create';
 import PeopleIcon from '@mui/icons-material/People';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SubjectIcon from '@mui/icons-material/Subject';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { addHours } from 'date-fns';
 import axios from 'axios';
 import { useAlertContext } from 'context/AlertContext';
@@ -44,7 +35,7 @@ type UserType = {
   id: string;
   fullName: string;
   email: string;
-}
+};
 
 const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
   const [error, setError] = useState<string | null>(null);
@@ -62,33 +53,28 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
 
   const guests = watch('guests');
 
-  useEffect(() => {
-    /* ogarnac tak, zeby dzialalo tez przy usuwaniu */
-    const fileterdOptions = guestsOptions.filter((option) =>
-      !guests.includes(option)
-    );
-    console.log(fileterdOptions);
-    setGuestsOptions(fileterdOptions);
-  }, [guests]);
-
+  // Pobram użytkowników tylko raz i zapisuje pełna listy opcji
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get<UserType[]>('http://localhost:4000/users');
-        const users = response.data;
-        const options = users.map((user) => ({
+        const options = response.data.map((user) => ({
           value: user.id,
           label: user.fullName,
         }));
         setGuestsOptions(options);
       } catch (err) {
-        // dodac obsluge bledu
-        console.error(err);
+        setError('Wystąpił błąd podczas pobierania użytkowników');
       }
     };
     fetchUsers();
-
   }, []);
+
+  // sprawdzam czy któryś z option nie jest w liscie guests
+  const filteredGuestsOptions = guestsOptions.filter(
+    // jeśli któraś z option nie ma w liscie guests to pokazuje ją raz jeszcze w filteredGuestsOptions
+    (option) => !guests.some((selected) => selected.value === option.value)
+  );
 
   const onSubmit = async ({ duration, ...values }: FormData) => {
     try {
@@ -102,11 +88,11 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
       };
 
       await axios.post('http://localhost:4000/calendar/events/add', body);
-      // ten endpoint powinien zwracac user'ow w calosci
       showSuccessAlert('Event added successfully');
       onClose();
     } catch (err) {
-      const errorMessage = (err as any).response?.data?.message || 'An unexpected error occurred.';
+      const errorMessage =
+        (err as any).response?.data?.message || 'An unexpected error occurred.';
       setError(errorMessage);
     }
   };
@@ -165,7 +151,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
             <Stack direction="row" spacing={1} alignItems="center">
               <AccessTimeIcon sx={{ color: 'primary.dark' }} />
               <FormTextField
-                name='date'
+                name="date"
                 control={control}
                 label="Data"
                 type="date"
@@ -198,7 +184,8 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
                 name="guests"
                 control={control}
                 label="Goście"
-                options={guestsOptions}
+                // Używamy przefiltrowanej listy, dzięki czemu po usunięciu gościa pojawi się ponownie
+                options={filteredGuestsOptions}
                 fullWidth
               />
             </Stack>
