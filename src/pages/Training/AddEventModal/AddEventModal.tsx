@@ -184,6 +184,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
                 name="guests"
                 control={control}
                 label="Goście"
+                limitTags={3}
                 // Używamy przefiltrowanej listy, dzięki czemu po usunięciu gościa pojawi się ponownie
                 options={filteredGuestsOptions}
                 fullWidth

@@ -11,10 +11,11 @@ type FormTextFieldProps = {
   name: string;
   control: any;
   label: string;
+  limitTags: number;
   options: OptionType[]
 } & TextFieldProps; // to daje wszystkie funkcjoinalnosci TextField z MUI
 
-export const FormAutocomplete:FC<FormTextFieldProps> = ({ name, control, options }) => (
+export const FormAutocomplete:FC<FormTextFieldProps> = ({ name, control, options, limitTags }) => (
   <Controller
     name={name}
     control={control}
@@ -24,12 +25,13 @@ export const FormAutocomplete:FC<FormTextFieldProps> = ({ name, control, options
         options={options}
         getOptionLabel={(option) => option.label}
         value={value}
+        limitTags={limitTags}
         onChange={(_, newValue) => onChange(newValue)}
         renderInput={(params) => (
           <TextField
             {...params}
             label="Dodaj gości"
-            placeholder="Wybierz..."
+            placeholder={value?.length === 0 ? 'Wybierz gościa' : ''}
             fullWidth
           />
         )}
