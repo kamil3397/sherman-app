@@ -164,31 +164,19 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
 
             <Stack direction="row" spacing={1} alignItems="center">
               <AccessTimeIcon sx={{ color: 'primary.dark' }} />
-              {/* do przerobienia na FormTextfield */}
-              <Controller
-                name="date"
+              <FormTextField
+                name='date'
                 control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Data"
-                    type="date"
-                    fullWidth
-                  />
-                )}
+                label="Data"
+                type="date"
+                fullWidth
               />
-              <Controller
+              <FormTextField
                 name="time"
                 control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Godzina"
-                    type="time"
-                    InputLabelProps={{ shrink: true }}
-                    fullWidth
-                  />
-                )}
+                label="Godzina"
+                type="time"
+                fullWidth
               />
             </Stack>
 
