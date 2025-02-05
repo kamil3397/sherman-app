@@ -34,13 +34,13 @@ export const FormAutocomplete: FC<FormTextFieldProps> = ({ name, control, option
               key={option.value}
               label={option.label}
               sx={{
-                backgroundColor: 'secondary.main', // Jasnoniebieskie tło
-                color: 'primary.main', // Ciemniejszy tekst
+                backgroundColor: 'secondary.main',
+                color: 'primary.main',
                 fontWeight: 'bold',
                 borderRadius: '12px',
                 padding: '4px',
                 '& .MuiChip-deleteIcon': {
-                  color: 'primary.main', // Czerwony przycisk usuwania
+                  color: 'primary.main',
                 },
               }}
             />
