@@ -127,9 +127,6 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
         <Typography
           variant="h6"
           sx={{
-            mb: 2,
-            fontWeight: 'bold',
-            textAlign: 'center',
             color: 'primary.main',
           }}
         >
@@ -141,6 +138,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
             <Stack direction="row" spacing={1} alignItems="center">
               <CreateIcon sx={{ color: 'primary.dark' }} />
               <FormTextField
+                variant='outlined'
                 name="title"
                 control={control}
                 label="Tytuł wydarzenia"
@@ -153,14 +151,14 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
               <FormTextField
                 name="date"
                 control={control}
-                label="Data"
+                label=""
                 type="date"
                 fullWidth
               />
               <FormTextField
                 name="time"
                 control={control}
-                label="Godzina"
+                label=''
                 type="time"
                 fullWidth
               />
@@ -178,7 +176,8 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
               />
             </Stack>
 
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} alignItems="center" color='primary.main'
+            >
               <PeopleIcon sx={{ color: 'primary.dark' }} />
               <FormAutocomplete
                 name="guests"
@@ -192,17 +191,10 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
             </Stack>
 
             <Button
-              variant="contained"
               type="submit"
-              size="medium"
               sx={{
                 alignSelf: 'flex-end',
                 mt: 2,
-                backgroundColor: 'primary.dark',
-                color: 'white',
-                '&:hover': {
-                  backgroundColor: 'primary.main',
-                },
               }}
             >
               Zapisz

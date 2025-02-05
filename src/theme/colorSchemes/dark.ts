@@ -15,20 +15,20 @@ export const darkPalette = {
     disabled: 'rgba(245,245,245, 0.3)',
   },
   components: {
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: {
-          backgroundColor: 'rgba(255, 255, 255, 0.1)', // Tło dla ciemnego motywu
-          color: 'rgba(245,245,245, 0.9)', // Tekst
-          '& fieldset': {
-            borderColor: 'rgba(245,245,245, 0.3)', // Ramka
-          },
-          '&.Mui-focused fieldset': {
-            borderColor: 'secondary.main', // Ramka po fokusie
-          },
-        },
-      },
-    },
+    // MuiOutlinedInput: {
+    //   styleOverrides: {
+    //     root: {
+    //       backgroundColor: 'rgba(255, 255, 255, 0.1)', // Tło dla ciemnego motywu
+    //       color: 'rgba(245,245,245, 0.9)', // Tekst
+    //       '& fieldset': {
+    //         borderColor: 'rgba(245,245,245, 0.3)', // Ramka
+    //       },
+    //       '&.Mui-focused fieldset': {
+    //         borderColor: 'secondary.main', // Ramka po fokusie
+    //       },
+    //     },
+    //   },
+    // },
     MuiButton: {
       styleOverrides: {
         root: {
