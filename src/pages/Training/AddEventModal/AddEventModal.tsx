@@ -1,11 +1,11 @@
 import { FC, useEffect, useState } from 'react';
-import { Box, Typography, Button, Modal, Stack, Autocomplete, TextField, IconButton } from '@mui/material';
+import { Box, Typography, Button, Modal, Stack, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateIcon from '@mui/icons-material/Create';
 import PeopleIcon from '@mui/icons-material/People';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SubjectIcon from '@mui/icons-material/Subject';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { addHours } from 'date-fns';
 import axios from 'axios';
 import { useAlertContext } from 'context/AlertContext';
@@ -31,12 +31,18 @@ type FormData = {
   date: string;
 };
 
+type UserType = {
+  id: string;
+  fullName: string;
+  email: string;
+};
+
 const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
   const [error, setError] = useState<string | null>(null);
   const [guestsOptions, setGuestsOptions] = useState<OptionType[]>([]);
   const { showSuccessAlert } = useAlertContext();
 
-  const { handleSubmit, control } = useForm<FormData>({
+  const { handleSubmit, control, watch } = useForm<FormData>({
     defaultValues: {
       title: '',
       description: '',
@@ -45,25 +51,30 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
     },
   });
 
+  const guests = watch('guests');
+
+  // Pobram użytkowników tylko raz i zapisuje pełna listy opcji
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/users');
-        // ten endpoint powinien zwracac user'ow w calosci
-        const users = response.data;
-        console.log('usersBeforeMap', users);
-        // trzeba pozbyc sie :any
-        const options = users.map((user: any) => ({
-          value: user._id,
-          label: `${user.name} ${user.lastName}`,
+        const response = await axios.get<UserType[]>('http://localhost:4000/users');
+        const options = response.data.map((user) => ({
+          value: user.id,
+          label: user.fullName,
         }));
         setGuestsOptions(options);
       } catch (err) {
-        console.error(err);
+        setError('Wystąpił błąd podczas pobierania użytkowników');
       }
-      fetchUsers();
     };
+    fetchUsers();
   }, []);
+
+  // sprawdzam czy któryś z option nie jest w liscie guests
+  const filteredGuestsOptions = guestsOptions.filter(
+    // jeśli któraś z option nie ma w liscie guests to pokazuje ją raz jeszcze w filteredGuestsOptions
+    (option) => !guests.some((selected) => selected.value === option.value)
+  );
 
   const onSubmit = async ({ duration, ...values }: FormData) => {
     try {
@@ -80,7 +91,8 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
       showSuccessAlert('Event added successfully');
       onClose();
     } catch (err) {
-      const errorMessage = (err as any).response?.data?.message || 'An unexpected error occurred.';
+      const errorMessage =
+        (err as any).response?.data?.message || 'An unexpected error occurred.';
       setError(errorMessage);
     }
   };
@@ -97,7 +109,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
           bgcolor: 'secondary.light',
           boxShadow: 24,
           p: 3,
-          borderRadius: 2
+          borderRadius: 2,
         }}
       >
         <IconButton
@@ -112,115 +124,89 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
           <CloseIcon />
         </IconButton>
 
-        <Stack direction="column" spacing={0.5} mb={2}>
-          <Typography variant="body2" sx={{ color: 'primary.main' }}>
-            {`${dateTime.date}, ${dateTime.hour}`}
-          </Typography>
-          <Typography variant="h6" sx={{ color: 'primary.main' }}>
-            Dodaj wydarzenie
-          </Typography>
-        </Stack>
+        <Typography
+          variant="h6"
+          sx={{
+            color: 'primary.main',
+          }}
+        >
+          Dodaj wydarzenie
+        </Typography>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={2}>
             <Stack direction="row" spacing={1} alignItems="center">
               <CreateIcon sx={{ color: 'primary.dark' }} />
               <FormTextField
+                variant='outlined'
                 name="title"
                 control={control}
-                label="Tytuł"
+                label="Tytuł wydarzenia"
+                fullWidth
               />
             </Stack>
 
-            <Stack direction="row" spacing={1} alignItems="flex-start">
-              <SubjectIcon sx={{ color: 'primary.dark', mt: 1 }} />
+            <Stack direction="row" spacing={1} alignItems="center">
+              <AccessTimeIcon sx={{ color: 'primary.dark' }} />
+              <FormTextField
+                name="date"
+                control={control}
+                label=""
+                type="date"
+                fullWidth
+              />
+              <FormTextField
+                name="time"
+                control={control}
+                label=''
+                type="time"
+                fullWidth
+              />
+            </Stack>
+
+            <Stack direction="row" spacing={1} alignItems="center">
+              <SubjectIcon sx={{ color: 'primary.dark' }} />
               <FormTextField
                 name="description"
                 control={control}
                 label="Opis"
                 multiline
-                rows={2}
+                rows={3}
+                fullWidth
               />
             </Stack>
 
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} alignItems="center" color='primary.main'
+            >
               <PeopleIcon sx={{ color: 'primary.dark' }} />
               <FormAutocomplete
                 name="guests"
                 control={control}
                 label="Goście"
-                options={guestsOptions}
+                limitTags={3}
+                // Używamy przefiltrowanej listy, dzięki czemu po usunięciu gościa pojawi się ponownie
+                options={filteredGuestsOptions}
+                fullWidth
               />
             </Stack>
 
-            <Stack direction="row" spacing={1} alignItems="center">
-              <AccessTimeIcon sx={{ color: 'primary.dark' }} />
-              <FormTextField
-                name="duration"
-                control={control}
-                label="Czas trwania (w godzinach)"
-                type="number"
-              />
-            </Stack>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <AccessTimeIcon sx={{ color: 'primary.dark' }} />
-              <Controller
-                name="date"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Data"
-                    type="date"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    fullWidth
-                  />
-                )}
-              />
-            </Stack>
+            <Button
+              type="submit"
+              sx={{
+                alignSelf: 'flex-end',
+                mt: 2,
+              }}
+            >
+              Zapisz
+            </Button>
 
-            <Stack direction="row" spacing={1} alignItems="center">
-              <AccessTimeIcon sx={{ color: 'primary.dark' }} />
-              <Controller
-                name="time"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Godzina"
-                    type="time"
-                    fullWidth
-                  />
-                )}
-              />
-            </Stack>
-
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <Button
-                variant="contained"
-                type="submit"
-                sx={{
-                  backgroundColor: 'primary.dark',
-                  color: '#ffffff',
-                  '&:hover': {
-                    backgroundColor: 'primary.main',
-                  },
-                }}
-              >
-                Zapisz
-              </Button>
-            </Box>
+            {error && (
+              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                {error}
+              </Typography>
+            )}
           </Stack>
-
         </form>
-
-        {error && (
-          <Typography color="error" variant="body2" sx={{ mt: 2 }}>
-            {error}
-          </Typography>
-        )}
       </Box>
     </Modal>
   );
