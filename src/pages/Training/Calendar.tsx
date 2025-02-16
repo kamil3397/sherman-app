@@ -2,55 +2,68 @@ import { useState, useEffect, FC, useCallback, useMemo } from 'react';
 import { Box, Typography, Paper, Grid } from '@mui/material';
 import { format, formatISO, addHours } from 'date-fns';
 import axios from 'axios';
+import { useAlertContext } from 'context/AlertContext';
 import { DateNav } from './DateNav/DateNav';
 import AddEventModal from './AddEventModal/AddEventModal';
 import { HOURS_ARR } from '../../config/hoursMap';
 import { getCurrentWeek } from './utils/getCurrentWeek';
+import EventInfoModal, { DayEvent } from './EventInfoModal/EventInfoModal';
+import EventsVisualizer from './EventVisualizer/EventVisualizer';
 
 export type Event = {
   startDate: string;
   endDate: string;
   title: string;
   description: string;
+  _id: string;
 };
 
 const Calendar: FC = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [openModal, setOpenModal] = useState(false);
   const [eventStartDate, setEventStartDate] = useState('');
+  const [events, setEvents] = useState<Event[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<DayEvent | null>(null);
+  const [infoModalOpen, setInfoModalOpen] = useState(false);
+  const { showErrorAlert } = useAlertContext();
 
   const currentWeek = useMemo(() => getCurrentWeek(startDate), [startDate]);
 
   const handleHourClick = (date: Date, hour: number) => {
     const isoEventStartDate = formatISO(addHours(date, hour));
-    console.log(isoEventStartDate);
     setEventStartDate(isoEventStartDate);
     setOpenModal(true);
   };
 
   const closeModal = useCallback(() => {
     setOpenModal(false);
-  }, [setOpenModal]);
+  }, []);
 
   useEffect(() => {
-
-    const fetchEvents = async () => {
-      await axios.get(`http://localhost:4000/calendar?startDate=${currentWeek[0]}&endDate=${currentWeek[currentWeek.length - 1]}`)
+    const fetchEvents = () => {
+      axios
+        .get(
+          `http://localhost:4000/calendar?startDate=${currentWeek[0]}&endDate=${currentWeek[currentWeek.length - 1]}`
+        )
         .then((res) => {
-          console.log(res);
-          /*
-        event, ktory dostaniesz z backendu bedziesz mial strukture:
-        title, description, startDate, endDate
-        */
-          console.log('currentWeek[0]:', currentWeek[0]);
-          console.log('currentWeek[last]:', currentWeek[currentWeek.length - 1]);
-
-        }).catch((err) => {
-          console.log(err);
+          setEvents(Array.isArray(res.data) ? res.data : []);
+        })
+        .catch(() => {
+          showErrorAlert('Wystąpił błąd podczas pobierania wydarzeń');
         });
     };
     fetchEvents();
-  }, [startDate, closeModal]);
+  }, [startDate, currentWeek, closeModal]);
+
+  const handleEventClick = (event: DayEvent) => {
+    setSelectedEvent(event);
+    setInfoModalOpen(true);
+  };
+
+  const handleCloseInfoModal = () => {
+    setInfoModalOpen(false);
+    setSelectedEvent(null);
+  };
 
   return (
     <Box
@@ -76,16 +89,26 @@ const Calendar: FC = () => {
           marginBottom: '10px',
         }}
       >
-
         <DateNav startDate={startDate} setStartDate={setStartDate} />
       </Box>
       <Grid container spacing={2} sx={{ width: '90%', maxWidth: '1400px' }}>
         {currentWeek.map((day) => {
-          const isToday = format(new Date(), 'dd/MM/yyyy') === format(day, 'dd/MM/yyyy');
-          console.log(`Day: ${format(day, 'dd/MM/yyyy')} | isToday: ${isToday}`);
+          const formattedDay = format(day, 'dd/MM/yyyy');
+          const isToday = format(new Date(), 'dd/MM/yyyy') === formattedDay;
+          const dayEvents = events
+            .filter(
+              (event) =>
+                format(new Date(event.startDate), 'dd/MM/yyyy') === formattedDay
+            )
+            .map(({ startDate, endDate, ...rest }) => ({
+              startHour: new Date(startDate).getHours(),
+              endHour: new Date(endDate).getHours(),
+              duration: new Date(endDate).getHours() - new Date(startDate).getHours(),
+              ...rest,
+            }));
 
           return (
-            <Grid item xs={12 / 7} key={day.getDay()}>
+            <Grid item xs={12 / 7} key={day.getTime()}>
               <Paper
                 elevation={3}
                 sx={{
@@ -96,13 +119,28 @@ const Calendar: FC = () => {
                   flexDirection: 'column',
                   justifyContent: 'flex-start',
                   overflow: 'hidden',
+                  position: 'relative',
                 }}
               >
-                <Typography variant="h5" sx={{ color: isToday ? 'primary.dark' : 'secondary.dark', textAlign: 'center', marginBottom: 2 }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    color: isToday ? 'primary.dark' : 'secondary.dark',
+                    textAlign: 'center',
+                    marginBottom: 2,
+                  }}
+                >
                   {format(day, 'EEEE')}
                 </Typography>
-                <Typography variant="h6" sx={{ color: isToday ? 'primary.dark' : 'secondary.main', textAlign: 'center', marginBottom: 2 }}>
-                  {format(day, 'dd/MM/yyyy')}
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: isToday ? 'primary.dark' : 'secondary.main',
+                    textAlign: 'center',
+                    marginBottom: 2,
+                  }}
+                >
+                  {formattedDay}
                 </Typography>
                 <Box sx={{ flex: 1, position: 'relative', marginTop: 2 }}>
                   {HOURS_ARR.map(({ label, value }, index) => (
@@ -112,7 +150,7 @@ const Calendar: FC = () => {
                       sx={{
                         position: 'relative',
                         height: `calc(100% / ${HOURS_ARR.length})`,
-                        borderBottom: index < 11 ? '1px solid #ddd' : 'none',
+                        borderBottom: index < HOURS_ARR.length - 1 ? '1px solid #ddd' : 'none',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
@@ -122,8 +160,7 @@ const Calendar: FC = () => {
                         transition: 'background-color 0.3s ease',
                         '&:hover': {
                           backgroundColor: isToday ? 'secondary.dark' : 'primary.main',
-                          cursor: 'pointer',
-                        }
+                        },
                       }}
                     >
                       <Typography
@@ -135,29 +172,26 @@ const Calendar: FC = () => {
                       >
                         {label}
                       </Typography>
-                      {/* {events
-                        .filter((event) => event.date === day.date && event.hour === hour)
-                        .map((event, i) => (
-                          <Typography
-                            key={i}
-                            variant="caption"
-                            sx={{ fontSize: '0.75rem', color: '#444' }}
-                          >
-                            {event.title}
-                          </Typography>
-                        ))} */}
                     </Box>
                   ))}
+                  <EventsVisualizer events={dayEvents} isToday={isToday} onEventClick={handleEventClick} />
                 </Box>
               </Paper>
             </Grid>
           );
         })}
       </Grid>
-      {eventStartDate && <AddEventModal open={openModal} onClose={closeModal} dateTime={{
-        date: eventStartDate.split('T')[0],
-        hour: eventStartDate.split('T')[1].slice(0, 5),
-      }}/>}
+      {eventStartDate && (
+        <AddEventModal
+          open={openModal}
+          onClose={closeModal}
+          dateTime={{
+            date: eventStartDate.split('T')[0],
+            hour: eventStartDate.split('T')[1].slice(0, 5),
+          }}
+        />
+      )}
+      <EventInfoModal open={infoModalOpen} event={selectedEvent} onClose={handleCloseInfoModal} />
     </Box>
   );
 };
