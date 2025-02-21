@@ -1,9 +1,12 @@
-/* eslint-disable no-undef */
-import { render } from '@testing-library/react';
-import { NavigationBar } from 'components/NavigationBar';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { NavigationBar } from '../NavigationBar';
 
-describe('NavigationBar Component', () => {
-  it('renders NavigationBar', () => {
-    render(<NavigationBar />);
-  });
+test('NavigationBar renderuje się poprawnie', () => {
+  render(
+    <NavigationBar />
+  );
+
+  expect(screen.getByAltText('Sherman Shooting Logo')).toBeInTheDocument();
+  expect(screen.getByText(/Sherman Shooting Team/i)).toBeInTheDocument();
 });
