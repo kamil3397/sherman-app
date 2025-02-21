@@ -58,7 +58,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
   const [guestsOptions, setGuestsOptions] = useState<OptionType[]>([]);
   const { showSuccessAlert } = useAlertContext();
 
-  const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm<FormData>({
+  const { control, handleSubmit, watch, formState: { errors } } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       title: '',
@@ -69,12 +69,6 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
       endTime: dateTime.hour,
     },
   });
-
-  useEffect(() => {
-    setValue('date', dateTime.date);
-    setValue('time', dateTime.hour);
-    setValue('endTime', dateTime.hour);
-  }, [dateTime, setValue]);
 
   useEffect(() => {
     const fetchUsers = async () => {
