@@ -78,7 +78,7 @@ export const NavigationBar: FC = () => {
             }}
           >
             <Tab label="Home" component={Link} to="/" />
-            <Tab label="About" />
+            <Tab label="About" component={Link} to='about' />
             <Tab label="Training" component={Link} to="/training" />
             <Tab label="Contact" />
             {isLoggedIn ? (
