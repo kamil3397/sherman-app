@@ -1,7 +1,6 @@
-/* eslint-disable no-undef */
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useColorScheme } from '@mui/material';
-import { ThemeSwitch } from '../ThemeSwitch';
+import { ThemeSwitch } from './ThemeSwitch';
 
 // Mock hooka useColorScheme
 jest.mock('@mui/material', () => {
@@ -30,7 +29,7 @@ describe('ThemeSwitch component', () => {
     render(<ThemeSwitch />);
 
     // Sprawdzamy, czy tekst informacyjny wskazuje "dark"
-    expect(screen.getByText('Current mode: dark')).toBeInTheDocument();
+    expect(screen.getByText('Current mode: dark')).toBeDefined();
 
     // Switch to checkbox
     const checkbox = screen.getByRole('checkbox') as HTMLInputElement;
@@ -50,7 +49,7 @@ describe('ThemeSwitch component', () => {
     render(<ThemeSwitch />);
 
     // Sprawdzamy, czy tekst informacyjny wskazuje "light"
-    expect(screen.getByText('Current mode: light')).toBeInTheDocument();
+    expect(screen.getByText('Current mode: light')).toBeDefined();
 
     // Switch (checkbox) nie powinien być zaznaczony, ponieważ tryb to light
     const checkbox = screen.getByRole('checkbox') as HTMLInputElement;

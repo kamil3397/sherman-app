@@ -1,9 +1,8 @@
-/* eslint-disable no-undef */
-// AlertContext.test.tsx
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { toast } from 'react-toastify';
-import { AlertProvider, useAlertContext } from 'context/AlertContext';
+import { userEvent } from '@testing-library/user-event';
+import { describe, expect } from '@jest/globals';
+import { AlertProvider, useAlertContext } from './AlertContext';
 
 // Mockowanie react-toastify, aby przechwycić wywołania metod
 jest.mock('react-toastify', () => ({
@@ -33,14 +32,15 @@ describe('AlertContext', () => {
     jest.clearAllMocks();
   });
 
-  test('showAlert powinien wywołać toast.info dla typu info', () => {
+  test('showAlert powinien wywołać toast.info dla typu info', async () => {
     render(
       <AlertProvider>
         <DummyComponent />
       </AlertProvider>
     );
 
-    fireEvent.click(screen.getByText('Show Alert'));
+    const user = userEvent.setup();
+    await user.click(screen.getByText('Show Alert'));
 
     expect(toast.info).toHaveBeenCalledTimes(1);
     expect(toast.info).toHaveBeenCalledWith(
@@ -53,13 +53,14 @@ describe('AlertContext', () => {
     );
   });
 
-  test('showSuccessAlert powinien wywołać toast.success', () => {
+  test('showSuccessAlert powinien wywołać toast.success', async() => {
     render(
       <AlertProvider>
         <DummyComponent />
       </AlertProvider>
     );
-    fireEvent.click(screen.getByText('Show Success'));
+    const user = userEvent.setup();
+    await user.click(screen.getByText('Show Success'));
 
     expect(toast.success).toHaveBeenCalledTimes(1);
     expect(toast.success).toHaveBeenCalledWith(
@@ -72,13 +73,14 @@ describe('AlertContext', () => {
     );
   });
 
-  test('showErrorAlert powinien wywołać toast.error', () => {
+  test('showErrorAlert powinien wywołać toast.error', async() => {
     render(
       <AlertProvider>
         <DummyComponent />
       </AlertProvider>
     );
-    fireEvent.click(screen.getByText('Show Error'));
+    const user = userEvent.setup();
+    await user.click(screen.getByText('Show Error'));
     expect(toast.error).toHaveBeenCalledTimes(1);
     expect(toast.error).toHaveBeenCalledWith(
       'error alert',
