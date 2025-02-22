@@ -32,7 +32,7 @@ describe('AlertContext', () => {
     jest.clearAllMocks();
   });
 
-  test('showAlert powinien wywołać toast.info dla typu info', async () => {
+  test('showAlert should call toast.info for type info', async () => {
     render(
       <AlertProvider>
         <DummyComponent />
@@ -53,7 +53,7 @@ describe('AlertContext', () => {
     );
   });
 
-  test('showSuccessAlert powinien wywołać toast.success', async() => {
+  test('showSuccessAlert should call toast.success.', async() => {
     render(
       <AlertProvider>
         <DummyComponent />
@@ -73,7 +73,7 @@ describe('AlertContext', () => {
     );
   });
 
-  test('showErrorAlert powinien wywołać toast.error', async() => {
+  test('showSuccessAlert should call toast.error', async() => {
     render(
       <AlertProvider>
         <DummyComponent />

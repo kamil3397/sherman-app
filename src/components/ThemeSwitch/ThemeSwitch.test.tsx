@@ -16,13 +16,13 @@ describe('ThemeSwitch component', () => {
     jest.clearAllMocks();
   });
 
-  test('zwraca null, gdy mode nie jest ustawiony', () => {
+  test('Returns null when mode is not set', () => {
     (useColorScheme as jest.Mock).mockReturnValue({ mode: null, setMode: jest.fn() });
     const { container } = render(<ThemeSwitch />);
     expect(container.firstChild).toBeNull();
   });
 
-  test('poprawnie renderuje się w trybie dark (domyślny) i zmienia na light po kliknięciu', () => {
+  test('It renders correctly in dark mode (default) and switches to light mode when clicked', () => {
     const setMode = jest.fn();
     // Domyślny stan to dark
     (useColorScheme as jest.Mock).mockReturnValue({ mode: 'dark', setMode });
@@ -42,7 +42,7 @@ describe('ThemeSwitch component', () => {
     expect(setMode).toHaveBeenCalledWith('light');
   });
 
-  test('poprawnie renderuje się w trybie light i zmienia na dark po kliknięciu', () => {
+  test('It renders correctly in light mode and switches to dark mode when clicked', () => {
     const setMode = jest.fn();
     // Ustawiamy tryb na light
     (useColorScheme as jest.Mock).mockReturnValue({ mode: 'light', setMode });
