@@ -46,10 +46,14 @@ const schema = yup.object({
   endTime: yup
     .string()
     .required('Godzina zakończenia jest wymagana')
-    .test('is-later', 'Ten sam czas zakończenia!', function (endTime) {
-      const startTime = this.parent.time;
-      return startTime && endTime ? startTime < endTime : true;
-    }),
+    .test(
+      'is-later',
+      'Ten sam czas zakończenia!',
+      (endTime, { parent }) => {
+        const startTime = parent.time;
+        return startTime && endTime ? startTime < endTime : true;
+      }
+    ),
   date: yup.string().required('Data jest wymagana'),
 });
 
