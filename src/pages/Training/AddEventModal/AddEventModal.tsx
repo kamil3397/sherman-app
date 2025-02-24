@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Box, Typography, Button, Modal, Stack, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateIcon from '@mui/icons-material/Create';
@@ -88,11 +88,18 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
 
   const guests = watch('guests');
 
-  // sprawdzam czy któryś z option nie jest w liscie guests
-  const filteredGuestsOptions = guestsOptions.filter(
-    // jeśli któraś z option nie ma w liscie guests to pokazuje ją raz jeszcze w filteredGuestsOptions
-    (option) => !guests.some((selected) => selected.value === option.value)
+  const filteredGuestsOptions = useMemo(() =>
+    guestsOptions.filter(
+      (option) => !guests.some((selected) => selected.value === option.value)
+    ),
+  [guests, guestsOptions]
   );
+
+  // sprawdzam czy któryś z option nie jest w liscie guests
+  // const filteredGuestsOptions = guestsOptions.filter(
+  // jeśli któraś z option nie ma w liscie guests to pokazuje ją raz jeszcze w filteredGuestsOptions
+  //   (option) => !guests.some((selected) => selected.value === option.value)
+  // );
 
   const onSubmit = async (values: FormData) => {
     try {

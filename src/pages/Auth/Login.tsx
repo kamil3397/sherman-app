@@ -3,7 +3,7 @@ import { Box, TextField, Button, Typography, Container, Paper, FormControl } fro
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import { useAlertContext } from 'context/AlertContext';
 import { useAuthContext } from '../../context/AuthContext';
 
