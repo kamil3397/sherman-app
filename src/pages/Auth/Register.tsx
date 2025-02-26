@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { Box, TextField, Button, Typography, Container, Paper, FormControl, Alert, AlertTitle } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';

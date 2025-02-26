@@ -1,19 +1,10 @@
 import React, { FC } from 'react';
 import { Modal, Box, Typography, Button } from '@mui/material';
-
-// Rozszerzamy interfejs DayEvent o opcjonalny opis
-export interface DayEvent {
-  _id: string;
-  title: string;
-  startHour: number;
-  endHour: number;
-  duration: number;
-  description?: string;
-}
+import { EventType } from 'types/EventTypes';
 
 interface EventInfoModalProps {
   open: boolean;
-  event: DayEvent | null;
+  event: EventType | null;
   onClose: () => void;
 }
 
@@ -30,7 +21,7 @@ const style = {
   p: 4,
 };
 
-const EventInfoModal: FC<EventInfoModalProps> = ({ open, event, onClose }) => {
+export const EventInfoModal: FC<EventInfoModalProps> = ({ open, event, onClose }) => {
   if (!event) return null;
 
   return (
@@ -61,5 +52,3 @@ const EventInfoModal: FC<EventInfoModalProps> = ({ open, event, onClose }) => {
     </Modal>
   );
 };
-
-export default EventInfoModal;

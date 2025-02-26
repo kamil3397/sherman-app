@@ -3,27 +3,28 @@ import { Box, Typography, Paper, Grid } from '@mui/material';
 import { format, formatISO, addHours } from 'date-fns';
 import axios from 'axios';
 import { useAlertContext } from 'context/AlertContext';
+import { EventType } from 'types/EventTypes';
 import { DateNav } from './DateNav/DateNav';
 import AddEventModal from './AddEventModal/AddEventModal';
 import { HOURS_ARR } from '../../config/hoursMap';
-import { getCurrentWeek } from './utils/getCurrentWeek';
-import EventInfoModal, { DayEvent } from './EventInfoModal/EventInfoModal';
+import { getCurrentWeek } from '../../utils/getCurrentWeek';
 import EventsVisualizer from './EventVisualizer/EventVisualizer';
+import { EventInfoModal } from './EventInfoModal/EventInfoModal';
 
-export type Event = {
-  startDate: string;
-  endDate: string;
-  title: string;
-  description: string;
-  _id: string;
-};
+// export type Event = {
+//   startDate: string;
+//   endDate: string;
+//   title: string;
+//   description: string;
+//   _id: string;
+// };
 
 const Calendar: FC = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [openModal, setOpenModal] = useState(false);
   const [eventStartDate, setEventStartDate] = useState('');
-  const [events, setEvents] = useState<Event[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<DayEvent | null>(null);
+  const [events, setEvents] = useState<EventType[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
   const [infoModalOpen, setInfoModalOpen] = useState(false);
   const { showErrorAlert } = useAlertContext();
 
@@ -43,10 +44,10 @@ const Calendar: FC = () => {
     const fetchEvents = () => {
       axios
         .get(
-          `http://localhost:4000/calendar?startDate=${currentWeek[0]}&endDate=${currentWeek[currentWeek.length - 1]}`
+          `http://localhost:4000/calendar?startDate=${currentWeek[0]}&endDate=${currentWeek[6]}`
         )
         .then((res) => {
-          setEvents(Array.isArray(res.data) ? res.data : []);
+          setEvents(res.data);
         })
         .catch(() => {
           showErrorAlert('Wystąpił błąd podczas pobierania wydarzeń');
@@ -55,7 +56,7 @@ const Calendar: FC = () => {
     fetchEvents();
   }, [startDate, currentWeek, closeModal]);
 
-  const handleEventClick = (event: DayEvent) => {
+  const handleEventClick = (event: EventType) => {
     setSelectedEvent(event);
     setInfoModalOpen(true);
   };
@@ -101,6 +102,8 @@ const Calendar: FC = () => {
                 format(new Date(event.startDate), 'dd/MM/yyyy') === formattedDay
             )
             .map(({ startDate, endDate, ...rest }) => ({
+              startDate,
+              endDate,
               startHour: new Date(startDate).getHours(),
               endHour: new Date(endDate).getHours(),
               duration: new Date(endDate).getHours() - new Date(startDate).getHours(),

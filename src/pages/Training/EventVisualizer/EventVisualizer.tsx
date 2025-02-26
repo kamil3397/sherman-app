@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { Box, Typography } from '@mui/material';
+import { EventType } from 'types/EventTypes';
 import { HOURS_ARR } from '../../../config/hoursMap';
 
 export interface DayEvent {
@@ -11,9 +12,9 @@ export interface DayEvent {
 }
 
 interface EventsVisualizerProps {
-  events: DayEvent[];
+  events: EventType[];
   isToday: boolean;
-  onEventClick: (event: DayEvent) => void;
+  onEventClick: (event: EventType) => void;
 }
 
 const EventsVisualizer: FC<EventsVisualizerProps> = ({ events, isToday, onEventClick }) => {
@@ -25,8 +26,8 @@ const EventsVisualizer: FC<EventsVisualizerProps> = ({ events, isToday, onEventC
           onClick={() => onEventClick && onEventClick(event) }
           sx={{
             position: 'absolute',
-            top: `${((event.startHour - HOURS_ARR[0].value) / HOURS_ARR.length) * 100}%`,
-            height: `${(event.duration / HOURS_ARR.length) * 100}%`,
+            top: `${(((event.startHour ?? 0) - HOURS_ARR[0].value) / HOURS_ARR.length) * 100}%`,
+            height: `${((event.duration ?? 0) / HOURS_ARR.length) * 100}%`,
             width: '100%',
             backgroundColor: isToday ? 'primary.main' : 'secondary.dark',
             // kolor czcionki nie nadpisuje sie....

@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, useContext, FC } from 'react';
+import { createContext, useState, ReactNode, useContext, FC, JSX } from 'react';
 import { Slide, toast, ToastOptions, } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
