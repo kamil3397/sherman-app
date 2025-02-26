@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Box, Typography, Button, Modal, Stack, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CreateIcon from '@mui/icons-material/Create';
@@ -6,12 +6,13 @@ import PeopleIcon from '@mui/icons-material/People';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SubjectIcon from '@mui/icons-material/Subject';
 import { useForm } from 'react-hook-form';
-import { addHours } from 'date-fns';
 import axios from 'axios';
 import { useAlertContext } from 'context/AlertContext';
 import { dayAndTimeToISO } from 'utils/dayAndTimeToISO';
 import { FormAutocomplete, OptionType } from 'components/FormAutocomplete';
 import { FormTextField } from 'components/FormTextField';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 type EventModalProps = {
   open: boolean;
@@ -25,9 +26,9 @@ type EventModalProps = {
 type FormData = {
   title: string;
   description: string;
-  duration: number;
   guests: OptionType[];
   time: string;
+  endTime: string;
   date: string;
 };
 
@@ -37,23 +38,42 @@ type UserType = {
   email: string;
 };
 
+const schema = yup.object({
+  title: yup.string().required('Tytuł jest wymagany').min(3, 'Tytuł musi mieć co najmniej 3 znaki'),
+  description: yup.string().required('Opis jest wymagany').min(3, 'Opis musi mieć co najmniej 3 znaki'),
+  guests: yup.array().default([]),
+  time: yup.string().required('Godzina rozpoczęcia jest wymagana'),
+  endTime: yup
+    .string()
+    .required('Godzina zakończenia jest wymagana')
+    .test(
+      'is-later',
+      'Ten sam czas zakończenia!',
+      (endTime, { parent }) => {
+        const startTime = parent.time;
+        return startTime && endTime ? startTime < endTime : true;
+      }
+    ),
+  date: yup.string().required('Data jest wymagana'),
+});
+
 const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
   const [error, setError] = useState<string | null>(null);
   const [guestsOptions, setGuestsOptions] = useState<OptionType[]>([]);
   const { showSuccessAlert } = useAlertContext();
 
-  const { handleSubmit, control, watch } = useForm<FormData>({
+  const { control, handleSubmit, watch, formState: { errors } } = useForm<FormData>({
+    resolver: yupResolver(schema),
     defaultValues: {
       title: '',
       description: '',
-      duration: 1,
       guests: [],
+      date: dateTime.date,
+      time: dateTime.hour,
+      endTime: dateTime.hour,
     },
   });
 
-  const guests = watch('guests');
-
-  // Pobram użytkowników tylko raz i zapisuje pełna listy opcji
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -70,16 +90,25 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
     fetchUsers();
   }, []);
 
-  // sprawdzam czy któryś z option nie jest w liscie guests
-  const filteredGuestsOptions = guestsOptions.filter(
-    // jeśli któraś z option nie ma w liscie guests to pokazuje ją raz jeszcze w filteredGuestsOptions
-    (option) => !guests.some((selected) => selected.value === option.value)
+  const guests = watch('guests');
+
+  const filteredGuestsOptions = useMemo(() =>
+    guestsOptions.filter(
+      (option) => !guests.some((selected) => selected.value === option.value)
+    ),
+  [guests, guestsOptions]
   );
 
-  const onSubmit = async ({ duration, ...values }: FormData) => {
+  // sprawdzam czy któryś z option nie jest w liscie guests
+  // const filteredGuestsOptions = guestsOptions.filter(
+  // jeśli któraś z option nie ma w liscie guests to pokazuje ją raz jeszcze w filteredGuestsOptions
+  //   (option) => !guests.some((selected) => selected.value === option.value)
+  // );
+
+  const onSubmit = async (values: FormData) => {
     try {
-      const startDate = new Date(dayAndTimeToISO(dateTime));
-      const endDate = addHours(new Date(startDate), duration);
+      const startDate = dayAndTimeToISO({ date: values.date, hour: values.time });
+      const endDate = dayAndTimeToISO({ date: values.date, hour: values.endTime });
 
       const body = {
         ...values,
@@ -124,12 +153,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
           <CloseIcon />
         </IconButton>
 
-        <Typography
-          variant="h6"
-          sx={{
-            color: 'primary.main',
-          }}
-        >
+        <Typography variant="h6" sx={{ color: 'primary.main' }}>
           Dodaj wydarzenie
         </Typography>
 
@@ -138,29 +162,36 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
             <Stack direction="row" spacing={1} alignItems="center">
               <CreateIcon sx={{ color: 'primary.dark' }} />
               <FormTextField
-                variant='outlined'
+                variant="outlined"
                 name="title"
                 control={control}
                 label="Tytuł wydarzenia"
                 fullWidth
+                error={!!errors.title}
+                helperText={errors.title?.message}
               />
             </Stack>
 
             <Stack direction="row" spacing={1} alignItems="center">
               <AccessTimeIcon sx={{ color: 'primary.dark' }} />
-              <FormTextField
-                name="date"
-                control={control}
-                label=""
-                type="date"
-                fullWidth
-              />
+              <FormTextField name="date" control={control} label="Data" type="date" fullWidth />
               <FormTextField
                 name="time"
                 control={control}
-                label=''
+                label="Godzina rozpoczęcia"
                 type="time"
                 fullWidth
+                error={!!errors.time}
+                helperText={errors.time?.message}
+              />
+              <FormTextField
+                name="endTime"
+                control={control}
+                label="Godzina zakończenia"
+                type="time"
+                fullWidth
+                error={!!errors.endTime}
+                helperText={errors.endTime?.message}
               />
             </Stack>
 
@@ -173,38 +204,28 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
                 multiline
                 rows={3}
                 fullWidth
+                error={!!errors.description}
+                helperText={errors.description?.message}
               />
             </Stack>
 
-            <Stack direction="row" spacing={1} alignItems="center" color='primary.main'
-            >
+            <Stack direction="row" spacing={1} alignItems="center" color="primary.main">
               <PeopleIcon sx={{ color: 'primary.dark' }} />
               <FormAutocomplete
                 name="guests"
                 control={control}
                 label="Goście"
                 limitTags={3}
-                // Używamy przefiltrowanej listy, dzięki czemu po usunięciu gościa pojawi się ponownie
                 options={filteredGuestsOptions}
                 fullWidth
               />
             </Stack>
 
-            <Button
-              type="submit"
-              sx={{
-                alignSelf: 'flex-end',
-                mt: 2,
-              }}
-            >
+            <Button type="submit" sx={{ alignSelf: 'flex-end', mt: 2 }}>
               Zapisz
             </Button>
 
-            {error && (
-              <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-                {error}
-              </Typography>
-            )}
+            {error && <Typography color="error">{error}</Typography>}
           </Stack>
         </form>
       </Box>

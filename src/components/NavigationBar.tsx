@@ -1,6 +1,6 @@
 import { AppBar, Toolbar, Box, Typography, Tabs, Tab, Stack } from '@mui/material';
 import { FC, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router';
 import logo from '../images/logoSherman.png';
 import { ThemeSwitch } from './ThemeSwitch';
 
