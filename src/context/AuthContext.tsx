@@ -1,6 +1,6 @@
 import { FC, ReactNode, useContext, createContext, useState } from 'react';
 import axios from 'axios';
-import { useAlertContext } from './AlertContext';
+import { useAlertContext } from './AlertContext/AlertContext';
 
 interface AuthContextProps {
     loginClient: (values: LoginData) => Promise<void>

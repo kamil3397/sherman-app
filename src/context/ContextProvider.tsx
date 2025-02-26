@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { ThemeProvider, useMediaQuery } from '@mui/material';
 import { theme } from 'theme/theme';
 import { AuthProvider } from './AuthContext';
-import { AlertProvider } from './AlertContext';
+import { AlertProvider } from './AlertContext/AlertContext';
 
 export const ContextProvider = ({ children }: PropsWithChildren) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');

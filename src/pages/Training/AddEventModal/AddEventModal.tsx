@@ -8,7 +8,7 @@ import SubjectIcon from '@mui/icons-material/Subject';
 import { useForm } from 'react-hook-form';
 import { addHours } from 'date-fns';
 import axios from 'axios';
-import { useAlertContext } from 'context/AlertContext';
+import { useAlertContext } from 'context/AlertContext/AlertContext';
 import { dayAndTimeToISO } from 'utils/dayAndTimeToISO';
 import { FormAutocomplete, OptionType } from 'components/FormAutocomplete';
 import { FormTextField } from 'components/FormTextField';
