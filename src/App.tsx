@@ -7,7 +7,7 @@ import { Loader } from 'components/Loader/Loader';
 
 const HomePage = lazy(() => import('pages/Home/HomePage'));
 const Register = lazy(() => import('pages/Auth/Register'));
-const Login = lazy(() => import('pages/Auth/Login'));
+const Login = lazy(() => import('pages/Auth/Login/Login'));
 const Calendar = lazy(() => import('pages/Training/Calendar'));
 
 function App() {

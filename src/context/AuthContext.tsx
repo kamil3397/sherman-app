@@ -19,7 +19,7 @@ interface LoginData {
     password: string,
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { showSuccessAlert, showErrorAlert } = useAlertContext();

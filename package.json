@@ -2,6 +2,14 @@
   "name": "new-react-app",
   "version": "0.1.0",
   "private": true,
+
+  "type": "module",
+  "jest": {
+    "extensionsToTreatAsEsm": [".ts", ".tsx"],
+    "transform": {
+      "^.+\\.tsx?$": ["babel-jest", { "presets": ["@babel/preset-env"] }]
+    }
+  },
   "dependencies": {
     "@date-io/dayjs": "^3.0.0",
     "@emotion/react": "^11.14.0",
@@ -29,6 +37,10 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.26.9",
+    "@babel/preset-react": "^7.26.3",
+    "@babel/preset-typescript": "^7.26.0",
+    "@swc/jest": "^0.2.37",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
     "@types/react": "^19.0.10",
@@ -36,6 +48,8 @@
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^5.48.0",
     "@typescript-eslint/parser": "^5.48.0",
+    "babel-jest": "^29.7.0",
+    "esbuild-jest": "^0.5.0",
     "eslint": "^8.31.0",
     "eslint-formatter-table": "^7.32.1",
     "eslint-plugin-import": "^2.26.0",
