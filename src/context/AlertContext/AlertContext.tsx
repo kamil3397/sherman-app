@@ -33,7 +33,6 @@ const alertIcons: Record<AlertType, JSX.Element> = {
 export const AlertProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [alert, setAlert] = useState<string | null>(null);
 
-  // eslint-disable-next-line default-param-last
   const showAlert = (message: string, type: AlertType = 'info', options?: ToastOptions) => {
     setAlert(message);
     const finalOptions: ToastOptions = {

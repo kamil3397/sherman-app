@@ -9,6 +9,7 @@ export type OptionType = {
 
 type FormTextFieldProps = {
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: any;
   label: string;
   limitTags: number;

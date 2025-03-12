@@ -7,10 +7,10 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SubjectIcon from '@mui/icons-material/Subject';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { useAlertContext } from 'context/AlertContext';
-import { dayAndTimeToISO } from 'utils/dayAndTimeToISO';
-import { FormAutocomplete, OptionType } from 'components/FormAutocomplete';
-import { FormTextField } from 'components/FormTextField';
+import { useAlertContext } from '../../../context/AlertContext/AlertContext';
+import { dayAndTimeToISO } from '../../../utils/dayAndTimeToISO';
+import { FormAutocomplete, OptionType } from '../../../components/FormAutocomplete';
+import { FormTextField } from '../../../components/FormTextField';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -134,7 +134,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 400,
+          width: 455,
           bgcolor: 'secondary.light',
           boxShadow: 24,
           p: 3,
