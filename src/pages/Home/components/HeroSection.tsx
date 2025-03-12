@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { FC } from 'react';
-import tagLogo from 'images/shermanTag.jpg';
+import tagLogo from '../../../images/shermanTag.jpg';
 
 export const HeroSection: FC = () => {
   return (

@@ -1,9 +1,8 @@
 import { Box, Card, CardMedia, Typography } from '@mui/material';
 import { FC } from 'react';
 import Grid from '@mui/material/Grid';
-import logo from 'images/shermanLog.jpg';
-import catchPhrase from 'images/shermanCatch.jpg';
-
+import catchPhrase from '../../../images/shermanCatch.jpg'
+import logo from '../../../images/logoSherman.png'
 const instagramPosts = [
   {
     image: logo,

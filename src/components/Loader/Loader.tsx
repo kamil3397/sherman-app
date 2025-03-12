@@ -1,7 +1,6 @@
-import * as React from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box } from '@mui/material';
-import Logo from 'images/loader.svg';
+import Logo from '../../images/logoSherman.png'
 
 export const Loader = () => {
   return (

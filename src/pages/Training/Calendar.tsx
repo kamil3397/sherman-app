@@ -4,8 +4,8 @@ import { format, formatISO, addHours } from 'date-fns';
 import axios from 'axios';
 import { DateNav } from './DateNav/DateNav';
 import AddEventModal from './AddEventModal/AddEventModal';
-import { HOURS_ARR } from '../../config/hoursMap';
 import { getCurrentWeek } from './utils/getCurrentWeek';
+import { HOURS_ARR } from '../../config/hoursMap'
 
 export type Event = {
   startDate: string;
