@@ -33,39 +33,40 @@ export const FormTextField: FC<FormTextFieldProps> = ({ name, control, fullWidth
 
 // https://www.freecodecamp.org/news/typescript-generics-with-functional-react-components/
 // PRZECZYTAC
-// import { TextField, TextFieldProps } from "@mui/material";
+// import { TextField, TextFieldProps } from '@mui/material';
+// //import typów z react-hook-form
 // import {
 //   FieldPath,
 //   FieldValues,
 //   UseControllerProps,
 //   useController,
-// } from "react-hook-form";
+// } from 'react-hook-form';
 
 // type FormTextfieldProps<
-//   TFieldValues extends FieldValues = FieldValues,
-//   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-// > = UseControllerProps<TFieldValues, TName> & TextFieldProps;
+// // TFieldValues - to typ właściwości formularza,
+//   TFieldValues extends FieldValues = FieldValues, // rozszerzam o prawowite FieldValues i ustawiam na domyślny FieldValues
+//   // TName - to ścieka do pola w obiekcie formularza
+//   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues> // rozszerzam o prawowite FieldPath i ustawiam na domyślny FieldPath
+// > = UseControllerProps<TFieldValues, TName> & TextFieldProps; // taki zapis sprawia ze FormTextField bedzie akceptował wszystkie
+// // propsy zwiazane z formularzem i wyglądem i zachowaniem TextField
 
 // export const FormTextfield = <
-//   TFieldValues extends FieldValues = FieldValues,
-//   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-// >({
-//   name,
-//   control,
-//   fullWidth = true,
-//   ...props
-// }:
+// TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>>({
+//   // otypowane wyzej propsy wraz z controlerm z react-hook-form
+//     name,
+//     control,
+//     fullWidth = true,
+//     ...props
+//   }:
 // FormTextfieldProps<TFieldValues, TName>) => {
-//   const {
-//     fieldState: { error, invalid },
-//     field: { value, onBlur, onChange },
-//   } = useController({ name, control });
+//   // integracja z react-hook-form
+//   const { fieldState: { error, invalid }, field: { value, onBlur, onChange } } = useController({ name, control });
 //   return (
 //     <TextField
-//       {...props}
+//       {...props} // to pozwala na przekzanie dodatkowych właściwosci które nie są specyficzne dla formularza
 //       onChange={onChange}
 //       onBlur={onBlur}
-//       value={value !== null ? value : ""}
+//       value={value !== null ? value : ''}
 //       error={invalid}
 //       fullWidth={fullWidth}
 //       helperText={invalid && error?.message && error.message}
