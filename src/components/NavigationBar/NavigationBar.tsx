@@ -1,8 +1,8 @@
 import { AppBar, Toolbar, Box, Typography, Tabs, Tab, Stack } from '@mui/material';
 import { FC, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import logo from '../images/logoSherman.png';
-import { ThemeSwitch } from './ThemeSwitch';
+import logo from '../../images/logoSherman.png';
+import { ThemeSwitch } from '../ThemeSwitch/ThemeSwitch';
 
 export const NavigationBar: FC = () => {
   const isLoggedIn = localStorage.getItem('accessToken');
@@ -68,6 +68,11 @@ export const NavigationBar: FC = () => {
               '.MuiTab-root': {
                 textTransform: 'none',
                 fontWeight: 'bold',
+                '&:hover': {
+                  backgroundColor: 'primary.main', 
+                  color: 'text.primary',
+                  borderRadius: 5,
+                },
                 '&.Mui-selected': {
                   color: 'text.primary',
                 },
