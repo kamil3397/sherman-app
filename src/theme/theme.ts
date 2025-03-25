@@ -36,6 +36,8 @@ export const theme = createTheme({
     h6: {
       fontSize: '1rem',
       fontWeight: 600,
+      mb: 2,
+      textAlign: 'center',
     },
     subtitle1: {
       fontSize: '1rem',
@@ -79,6 +81,8 @@ export const theme = createTheme({
           '&.Mui-focused fieldset': {
             borderColor: '#ADB5BD', // Kolor ramki w fokusie
           },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'rgba(0, 0, 0, 0.87)' }
         },
       },
     },
@@ -94,10 +98,13 @@ export const theme = createTheme({
     },
     MuiButton: {
       styleOverrides: {
-        root: {
-          backgroundColor: '#495057',
-          color: 'primary.main',
-        },
+        root: ({ theme }) => ({
+          backgroundColor: theme.palette.primary.main,
+          color: theme.palette.secondary.main,
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light,
+          },
+        }),
       },
     },
     MuiLink: {

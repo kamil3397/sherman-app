@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAlertContext } from 'context/AlertContext';
+import { useAlertContext } from '../../context/AlertContext/AlertContext'
 import axios from 'axios';
 
 type FormData = {
@@ -27,7 +27,7 @@ const schema = yup.object().shape({
 
 const RegistrationPage: FC = () => {
   const [error, setError] = useState<string | null>(null);
-  const { showSuccessAlert, showErrorAlert } = useAlertContext();
+  const { showSuccessAlert } = useAlertContext();
   const navigate = useNavigate();
 
   const { register, handleSubmit, formState: { errors }, } = useForm<FormData>({

@@ -4,8 +4,9 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
-import { useAlertContext } from 'context/AlertContext';
-import { useAuthContext } from '../../context/AuthContext';
+import { useAlertContext } from '../../../context/AlertContext/AlertContext';
+import { useAuthContext } from '../../../context/AuthContext';
+
 
 interface LoginData {
     email: string,
@@ -23,10 +24,7 @@ const LoginPage: FC = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (values: LoginData) => {
-    const { email, password } = values;
-    const userLogin: LoginData = { email, password };
-
-    await loginClient(userLogin)
+    await loginClient(values)
       .then(() => {
         showSuccessAlert('Successfully logged in');
         navigate('/');

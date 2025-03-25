@@ -1,9 +1,10 @@
 import { FC } from 'react';
 import { TextField, TextFieldProps } from '@mui/material';
-import { Controller } from 'react-hook-form';
+import { Controller} from 'react-hook-form';
 
 type FormTextFieldProps = {
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: any;
   label: string;
 } & TextFieldProps; // to daje wszystkie funkcjoinalnosci TextField z MUI
