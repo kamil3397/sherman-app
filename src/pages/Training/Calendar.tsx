@@ -2,7 +2,6 @@ import { useState, useEffect, FC, useCallback, useMemo } from 'react';
 import { Box, Typography, Paper, Grid } from '@mui/material';
 import { format, formatISO, addHours } from 'date-fns';
 import axios from 'axios';
-import { useAlertContext } from 'context/AlertContext';
 import { EventType } from 'types/EventTypes';
 import { DateNav } from './DateNav/DateNav';
 import AddEventModal from './AddEventModal/AddEventModal';
@@ -10,6 +9,7 @@ import { HOURS_ARR } from '../../config/hoursMap';
 import { getCurrentWeek } from '../../utils/getCurrentWeek';
 import EventsVisualizer from './EventVisualizer/EventVisualizer';
 import { EventInfoModal } from './EventInfoModal/EventInfoModal';
+import { useAlertContext } from '../../context/AlertContext/AlertContext';
 
 // export type Event = {
 //   startDate: string;
@@ -43,18 +43,20 @@ const Calendar: FC = () => {
   useEffect(() => {
     const fetchEvents = () => {
       axios
-        .get(
-          `http://localhost:4000/calendar?startDate=${currentWeek[0]}&endDate=${currentWeek[6]}`
-        )
-        .then((res) => {
-          setEvents(res.data);
-        })
-        .catch(() => {
-          showErrorAlert('Wystąpił błąd podczas pobierania wydarzeń');
-        });
+  .get(`
+    http://localhost:4000/calendar?startDate=${currentWeek[0]}&endDate=${currentWeek[6]}`)
+  .then((res) => {
+    console.log('Dane z API:', res.data);
+    setEvents(res.data);
+  })
+  .catch((error) => {
+    console.error('Błąd przy pobieraniu wydarzeń:', error);
+    showErrorAlert('Wystąpił błąd podczas pobierania wydarzeń');
+  });
+
     };
     fetchEvents();
-  }, [startDate, currentWeek, closeModal]);
+  }, [currentWeek, showErrorAlert]);
 
   const handleEventClick = (event: EventType) => {
     setSelectedEvent(event);
