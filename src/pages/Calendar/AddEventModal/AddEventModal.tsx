@@ -6,7 +6,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SubjectIcon from '@mui/icons-material/Subject';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useAlertContext } from '../../../context/AlertContext/AlertContext';
 import { dayAndTimeToISO } from '../../../utils/dayAndTimeToISO';
 import { FormAutocomplete, OptionType } from '../../../components/FormAutocomplete';
@@ -17,10 +17,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 type EventModalProps = {
   open: boolean;
   onClose: () => void;
-  dateTime: {
-    date: string;
-    hour: string;
-  };
+  eventDefaultDate?: string // DateTimeISO
 };
 
 type FormData = {
@@ -57,7 +54,7 @@ const schema = yup.object({
   date: yup.string().required('Data jest wymagana'),
 });
 
-const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
+export const AddEventModal: FC<EventModalProps> = ({ open, onClose, eventDefaultDate }) => {
   const [error, setError] = useState<string | null>(null);
   const [guestsOptions, setGuestsOptions] = useState<OptionType[]>([]);
   const { showSuccessAlert } = useAlertContext();
@@ -68,9 +65,9 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
       title: '',
       description: '',
       guests: [],
-      date: dateTime.date,
-      time: dateTime.hour,
-      endTime: dateTime.hour,
+      date: eventDefaultDate?.split('T')[0] || '',
+      time: eventDefaultDate?.split('T')[1].slice(0, 5),// startHour
+      endTime: eventDefaultDate?.split('T')[1].slice(0, 6), //endHour
     },
   });
 
@@ -83,7 +80,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
           label: user.fullName,
         }));
         setGuestsOptions(options);
-      } catch (err) {
+      } catch {
         setError('Wystąpił błąd podczas pobierania użytkowników');
       }
     };
@@ -96,7 +93,7 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
     guestsOptions.filter(
       (option) => !guests.some((selected) => selected.value === option.value)
     ),
-  [guests, guestsOptions]
+    [guests, guestsOptions]
   );
 
   // sprawdzam czy któryś z option nie jest w liscie guests
@@ -120,9 +117,10 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
       showSuccessAlert('Event added successfully');
       onClose();
     } catch (err) {
-      const errorMessage =
-        (err as any).response?.data?.message || 'An unexpected error occurred.';
+      const axiosError = err as AxiosError<{ message: string }>;
+      const errorMessage = axiosError.response?.data?.message || 'An unexpected error occurred.';
       setError(errorMessage);
+        // przetestowac error case
     }
   };
 
@@ -233,4 +231,3 @@ const AddEventModal: FC<EventModalProps> = ({ open, onClose, dateTime }) => {
   );
 };
 
-export default AddEventModal;
