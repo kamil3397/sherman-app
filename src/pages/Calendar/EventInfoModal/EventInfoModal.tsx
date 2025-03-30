@@ -4,7 +4,7 @@ import { EventType } from 'types/EventTypes';
 
 interface EventInfoModalProps {
   open: boolean;
-  event: EventType | null;
+  event: EventType;
   onClose: () => void;
 }
 
@@ -22,7 +22,6 @@ const style = {
 };
 
 export const EventInfoModal: FC<EventInfoModalProps> = ({ open, event, onClose }) => {
-  if (!event) return null;
 
   return (
     <Modal
@@ -32,7 +31,7 @@ export const EventInfoModal: FC<EventInfoModalProps> = ({ open, event, onClose }
       aria-describedby="event-info-description"
     >
       <Box sx={style}>
-        <Typography id="event-info-title" variant="h6" component="h2">
+        <Typography id="event-info-title" variant="h6">
           {event.title}
         </Typography>
         <Typography id="event-info-description" sx={{ mt: 2 }}>

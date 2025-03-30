@@ -3,21 +3,13 @@ import { Box, Typography } from '@mui/material';
 import { EventType } from 'types/EventTypes';
 import { HOURS_ARR } from '../../../config/hoursMap';
 
-export interface DayEvent {
-  _id: string;
-  title: string;
-  startHour: number;
-  endHour: number;
-  duration: number;
-}
-
 interface EventsVisualizerProps {
   events: EventType[];
   isToday: boolean;
   onEventClick: (event: EventType) => void;
 }
 
-const EventsVisualizer: FC<EventsVisualizerProps> = ({ events, isToday, onEventClick }) => {
+export const EventsVisualizer: FC<EventsVisualizerProps> = ({ events, isToday, onEventClick }) => {
   return (
     <>
       {events.map((event) => (
@@ -53,5 +45,3 @@ const EventsVisualizer: FC<EventsVisualizerProps> = ({ events, isToday, onEventC
     </>
   );
 };
-
-export default EventsVisualizer;
