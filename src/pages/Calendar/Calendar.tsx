@@ -9,14 +9,12 @@ import { getCurrentWeek } from 'utils/getCurrentWeek';
 import { EventInfoModal } from './EventInfoModal/EventInfoModal';
 import { useAlertContext } from 'context/AlertContext/AlertContext';
 import { CalendarDay } from './CalendarDay/CalendarDay';
+import { useCalendarContext } from 'context/CalendarContext';
 
 const Calendar: FC = () => {
-  const [startDate, setStartDate] = useState(new Date());
+  const { startDate, setStartDate , events, setEvents, selectedEvent, setSelectedEvent, infoModalOpen, setInfoModalOpen  } = useCalendarContext();
   const [openModal, setOpenModal] = useState(false);
   const [eventStartDate, setEventStartDate] = useState<string>();
-  const [events, setEvents] = useState<EventType[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
-  const [infoModalOpen, setInfoModalOpen] = useState(false);
   const { showErrorAlert } = useAlertContext();
 
   const currentWeek = useMemo(() => getCurrentWeek(startDate), [startDate]);
@@ -105,7 +103,6 @@ export default Calendar;
 
 /*
 1. Calendar trzyma za duzo state'ow
- - zrob pr z tego co masz i zrob merge
  - zrob Context dla obslugi calendarza CalendarContext
  rób po kolei partiami mniejsze czesci kodu latwiej beddzie debugowac
 
