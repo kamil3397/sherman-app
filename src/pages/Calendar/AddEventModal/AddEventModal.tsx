@@ -59,7 +59,7 @@ export const AddEventModal: FC<EventModalProps> = ({ open, onClose, eventDefault
   const [guestsOptions, setGuestsOptions] = useState<OptionType[]>([]);
   const { showSuccessAlert } = useAlertContext();
 
-  const { control, handleSubmit, watch, formState: { errors } } = useForm<FormData>({
+  const { control, handleSubmit, watch, reset, formState: { errors } } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       title: '',
@@ -70,6 +70,32 @@ export const AddEventModal: FC<EventModalProps> = ({ open, onClose, eventDefault
       endTime: eventDefaultDate?.split('T')[1].slice(0, 6), //endHour
     },
   });
+  useEffect(() => {
+    if (!eventDefaultDate) return;
+
+
+    //podziel date z ISO (np. 2025-04-01T18:00:00Z) na date ->  2025-04-01 i timeWithSeconds 18:00:00Z
+    const [date, timeWithSeconds] = eventDefaultDate.split('T');
+
+    //obetnij sekundy -> slice liczy od 1 znaku który jest 0 i obcina na 5 czyli 18:00:00 bedzie 18:00
+    const time = timeWithSeconds?.slice(0, 5) || '';
+    
+    //rodziel czas na godz i minuty 
+    const [hour, minutes] = time.split(':').map(Number);
+
+    //dodaj godzine do startTime     jesli cyfra bedzie np 9 to padStart zrobi 09 jesli bedzie np 10 to nic sie nie zmieni
+    const end = `${String(hour + 1).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+
+    // po zamknieciu modala zresetuj warosci
+    reset({
+      title: '',
+      description: '',
+      guests: [],
+      date,
+      time,
+      endTime: end,
+    });
+  }, [eventDefaultDate, reset]);
 
   useEffect(() => {
     const fetchUsers = async () => {
