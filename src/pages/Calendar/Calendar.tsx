@@ -1,6 +1,6 @@
 import { useState, useEffect, FC, useCallback, useMemo } from 'react';
 import { Box, Grid } from '@mui/material';
-import { formatISO, addHours } from 'date-fns';
+import { formatISO, addHours, endOfDay } from 'date-fns';
 import axios from 'axios';
 import { EventType } from 'types/EventTypes';
 import { DateNav } from './DateNav/DateNav';
@@ -21,6 +21,9 @@ const Calendar: FC = () => {
 
   const currentWeek = useMemo(() => getCurrentWeek(startDate), [startDate]);
 
+  const startWeek = currentWeek[0].toISOString();
+  const endWeek = endOfDay(currentWeek[6].toISOString());
+
   const handleHourClick = (date: Date, hour: number) => {
     const isoEventStartDate = formatISO(addHours(date, hour));
     setEventStartDate(isoEventStartDate);
@@ -33,8 +36,8 @@ const Calendar: FC = () => {
 
   useEffect(() => {
     const fetchEvents = async() => {
-      await axios.get(`http://localhost:4000/calendar?startDate=${currentWeek[0]}&endDate=${currentWeek[6]}`)
-        .then((res) => {
+      await axios.get(`http://localhost:4000/calendar?startDate=${startWeek}&endDate=${endWeek}`)
+      .then((res) => {
           setEvents(res.data);
         })
         .catch((error) => {
