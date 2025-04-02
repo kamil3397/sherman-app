@@ -1,18 +1,14 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import axios from 'axios';
+import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
 import { EventType } from 'types/EventTypes';
+import { getCurrentWeek } from 'utils/getCurrentWeek';
+import { useAlertContext } from './AlertContext/AlertContext';
 
 interface CalendarContextType {
     startDate: Date
     setStartDate: (date: Date) => void;
     events: EventType[];
-    setEvents: (events: EventType[]) => void;
-    selectedEvent: EventType | null;
-    setSelectedEvent: (event: EventType | null)=>void;
-    infoModalOpen: boolean
-    setInfoModalOpen: (open: boolean)=> void
-    openModal: boolean;
-    setOpenModal: (open: boolean)=>void
-
+    currentWeek: [Date, Date, Date, Date,Date, Date, Date]
 }
 
 const CalendarContext = createContext<CalendarContextType | undefined>(undefined);
@@ -20,13 +16,26 @@ const CalendarContext = createContext<CalendarContextType | undefined>(undefined
 export const CalendarProvider = ({ children }: {children: ReactNode}) => {
     const [startDate, setStartDate] = useState(new Date());
     const [events, setEvents] = useState<EventType[]>([])
-    const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
-    const [infoModalOpen, setInfoModalOpen] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
-
+    const { showErrorAlert } = useAlertContext();
     
+    const currentWeek = useMemo(() => getCurrentWeek(startDate), [startDate]);
+
+
+    useEffect(() => {
+        const fetchEvents = async() => {
+          await axios.get(`http://localhost:4000/calendar?startDate=${currentWeek[0]}&endDate=${currentWeek[6]}`)
+            .then((res) => {
+              setEvents(res.data);
+            })
+            .catch(() => {
+              showErrorAlert('Wystąpił błąd podczas pobierania wydarzeń');
+            });
+        };
+        fetchEvents();
+      }, [currentWeek, showErrorAlert]);
+
     return (
-        <CalendarContext.Provider value={{ startDate, setStartDate, events, setEvents, selectedEvent, setSelectedEvent, infoModalOpen, setInfoModalOpen, openModal, setOpenModal }}>
+        <CalendarContext.Provider value={{ startDate, setStartDate, events, currentWeek }}>
             {children}
         </CalendarContext.Provider>
     );

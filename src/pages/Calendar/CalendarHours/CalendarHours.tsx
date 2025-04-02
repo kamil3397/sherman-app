@@ -4,19 +4,19 @@ import { FC } from "react"
 
 interface CalendarHoursProps {
     day: Date
-    handleHourClick:(date:Date, hour: number) => void
+    openAddEventModal:(date:Date, hour: number) => void
     isToday: boolean
     }
 
 
-export const CalendarHours:FC<CalendarHoursProps> = ({handleHourClick, isToday, day})=> {
+export const CalendarHours:FC<CalendarHoursProps> = ({openAddEventModal, isToday, day})=> {
 
   return (
     <>
      {HOURS_ARR.map(({ label, value }, index) => (
               <Box
                 key={value}
-                onClick={() => handleHourClick(day, value)}
+                onClick={() => openAddEventModal(day, value)}
                 sx={{
                   position: 'relative',
                   height: `calc(100% / ${HOURS_ARR.length})`,

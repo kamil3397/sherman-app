@@ -2,20 +2,38 @@ import React, { FC } from 'react';
 import { Box, Typography } from '@mui/material';
 import { EventType } from 'types/EventTypes';
 import { HOURS_ARR } from '../../../config/hoursMap';
+import { useCalendarContext } from 'context/CalendarContext';
+import { format } from 'date-fns';
 
 interface EventsVisualizerProps {
-  events: EventType[];
   isToday: boolean;
-  onEventClick: (event: EventType) => void;
+  formattedDay: string
+  handleOpenInfoModal: (event: EventType) => void;
 }
 
-export const EventsVisualizer: FC<EventsVisualizerProps> = ({ events, isToday, onEventClick }) => {
+export const EventsVisualizer: FC<EventsVisualizerProps> = ({  isToday, handleOpenInfoModal, formattedDay }) => {
+  const {events}= useCalendarContext()
+
+  const dayEvents = events
+      .filter(
+        (event) =>
+          format(new Date(event.startDate), 'dd/MM/yyyy') === formattedDay
+      )
+      .map(({ startDate, endDate, ...rest }) => ({
+        startDate,
+        endDate,
+        startHour: new Date(startDate).getHours(),
+        endHour: new Date(endDate).getHours(),
+        duration: new Date(endDate).getHours() - new Date(startDate).getHours(),
+        ...rest,
+      }));
+
   return (
     <>
-      {events.map((event) => (
+      {dayEvents.map((event) => (
         <Box
           key={event._id}
-          onClick={() => onEventClick && onEventClick(event) }
+          onClick={() => handleOpenInfoModal(event) }
           sx={{
             position: 'absolute',
             top: `${(((event.startHour ?? 0) - HOURS_ARR[0].value) / HOURS_ARR.length) * 100}%`,

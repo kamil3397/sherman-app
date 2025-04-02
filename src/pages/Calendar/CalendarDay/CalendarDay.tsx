@@ -7,29 +7,15 @@ import { CalendarHours } from "../CalendarHours/CalendarHours";
 
 interface CalendarDayProps {
     day: Date
-    events: EventType[]
-    handleHourClick:(date:Date, hour: number) => void
-    handleEventClick: (event: EventType) => void
+    openAddEventModal:(date:Date, hour: number) => void
+    handleOpenInfoModal: (event: EventType) => void
 }
 
-export const CalendarDay:FC<CalendarDayProps> = ({day, events, handleEventClick, handleHourClick})=> {
+export const CalendarDay:FC<CalendarDayProps> = ({day, handleOpenInfoModal, openAddEventModal})=> {
 
-    
     const formattedDay = format(day, 'dd/MM/yyyy');
     const isToday = format(new Date(), 'dd/MM/yyyy') === formattedDay;
-    const dayEvents = events
-      .filter(
-        (event) =>
-          format(new Date(event.startDate), 'dd/MM/yyyy') === formattedDay
-      )
-      .map(({ startDate, endDate, ...rest }) => ({
-        startDate,
-        endDate,
-        startHour: new Date(startDate).getHours(),
-        endHour: new Date(endDate).getHours(),
-        duration: new Date(endDate).getHours() - new Date(startDate).getHours(),
-        ...rest,
-      }));
+    
 
     return (
       <Grid item xs={12 / 7} key={day.getTime()}>
@@ -67,8 +53,8 @@ export const CalendarDay:FC<CalendarDayProps> = ({day, events, handleEventClick,
             {formattedDay}
           </Typography>
           <Box sx={{ flex: 1, position: 'relative', marginTop: 2 }}>
-            <CalendarHours day={day} isToday={isToday} handleHourClick={handleHourClick}/>
-            <EventsVisualizer events={dayEvents} isToday={isToday} onEventClick={handleEventClick} />
+            <CalendarHours day={day} isToday={isToday} openAddEventModal={openAddEventModal}/>
+            <EventsVisualizer isToday={isToday} formattedDay={formattedDay} handleOpenInfoModal={handleOpenInfoModal} />
           </Box>
         </Paper>
       </Grid>

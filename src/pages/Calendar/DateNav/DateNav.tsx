@@ -1,13 +1,11 @@
 import { Box, Button, Typography } from '@mui/material';
 import { FC } from 'react';
 import { previousMonday, nextMonday, startOfWeek, endOfWeek, format } from 'date-fns';
+import { useCalendarContext } from 'context/CalendarContext';
 
-interface DateNavProps {
-  startDate: Date;
-  setStartDate: (date: Date) => void;
-}
-
-export const DateNav: FC<DateNavProps> = ({ startDate, setStartDate }) => {
+export const DateNav: FC = () => {
+  const { startDate, setStartDate } = useCalendarContext()
+  
   const setPreviousWeek = () => {
     const previousWeekStartDate = previousMonday(startOfWeek(startDate));
     setStartDate(previousWeekStartDate);
