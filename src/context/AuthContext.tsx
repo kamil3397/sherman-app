@@ -21,7 +21,8 @@ interface LoginData {
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [, setUser] = useState<UserType>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setUser] = useState<UserType>();
 
   const loginClient = async (values: LoginData) => {
     await axios.post('http://localhost:4000/login', values)
