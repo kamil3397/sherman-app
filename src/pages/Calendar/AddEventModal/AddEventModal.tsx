@@ -87,13 +87,7 @@ export const AddEventModal: FC<EventModalProps> = ({ open, onClose, eventDefault
     const end = `${String(hour + 1).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 
     // po zamknieciu modala zresetuj warosci
-    reset({
-      title: '',
-      description: '',
-      guests: [],
-      date,
-      time,
-      endTime: end,
+    reset()
     });
   }, [eventDefaultDate, reset]);
 
