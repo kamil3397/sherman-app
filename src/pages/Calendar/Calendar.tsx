@@ -9,7 +9,7 @@ import { getCurrentWeek } from 'utils/getCurrentWeek';
 import { EventInfoModal } from './EventInfoModal/EventInfoModal';
 import { useAlertContext } from 'context/AlertContext/AlertContext';
 import { CalendarDay } from './CalendarDay/CalendarDay';
-import { CalendarProvider, useCalendarContext } from 'context/CalendarContext';
+import { useCalendarContext } from 'context/CalendarContext';
 
 const Calendar: FC = () => {
   const { startDate, setStartDate , events, setEvents, selectedEvent, setSelectedEvent, infoModalOpen, setInfoModalOpen  } = useCalendarContext();
@@ -96,13 +96,7 @@ const Calendar: FC = () => {
   );
 };
  
-const CalendarWithProvider = () => (
-  <CalendarProvider>
-    <Calendar />
-  </CalendarProvider>
-);
-
-export default CalendarWithProvider;
+export default Calendar;
 
 
 
