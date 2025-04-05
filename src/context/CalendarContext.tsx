@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, ReactNode, useMemo, useEffe
 import { EventType } from 'types/EventTypes';
 import { getCurrentWeek } from 'utils/getCurrentWeek';
 import { useAlertContext } from './AlertContext/AlertContext';
+import { endOfDay } from 'date-fns';
 
 interface CalendarContextType {
     startDate: Date
@@ -19,11 +20,12 @@ export const CalendarProvider = ({ children }: {children: ReactNode}) => {
     const { showErrorAlert } = useAlertContext();
     
     const currentWeek = useMemo(() => getCurrentWeek(startDate), [startDate]);
-
+    const startWeek = currentWeek[0].toISOString();
+    const endWeek = endOfDay(currentWeek[6].toISOString());
 
     useEffect(() => {
         const fetchEvents = async() => {
-          await axios.get(`http://localhost:4000/calendar?startDate=${currentWeek[0]}&endDate=${currentWeek[6]}`)
+          await axios.get(`http://localhost:4000/calendar?startDate=${startWeek}&endDate=${endWeek}`)
             .then((res) => {
               setEvents(res.data);
             })
