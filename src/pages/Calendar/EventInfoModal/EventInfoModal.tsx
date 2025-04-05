@@ -4,7 +4,7 @@ import { EventType } from 'types/EventTypes';
 
 interface EventInfoModalProps {
   open: boolean;
-  event: EventType;
+  event: EventType | null;
   onClose: () => void;
 }
 
@@ -32,12 +32,12 @@ export const EventInfoModal: FC<EventInfoModalProps> = ({ open, event, onClose }
     >
       <Box sx={style}>
         <Typography id="event-info-title" variant="h6">
-          {event.title}
+          {event?.title}
         </Typography>
         <Typography id="event-info-description" sx={{ mt: 2 }}>
-          Czas trwania: {event.startHour}:00 - {event.endHour}:00
+          Czas trwania: {event?.startHour}:00 - {event?.endHour}:00
         </Typography>
-        {event.description && (
+        {event?.description && (
           <Typography variant="body2" sx={{ mt: 2 }}>
             {event.description}
           </Typography>

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import { MainLayout } from './layouts/MainLayout';
 import { ToastContainer } from 'react-toastify';
 import { Loader } from './components/Loader/Loader';
+import { CalendarProvider } from 'context/CalendarContext';
 
 const HomePage = lazy(()=> import('./pages/Home/HomePage'));
 const Register = lazy(() => import('./pages/Auth/Register'));
@@ -19,7 +20,11 @@ function App() {
               <Route index element={<HomePage />} />
               <Route path="/register" element={<Register />} />
               <Route path='/login' element={<Login />} />
-              <Route path='/training' element={<Calendar />} />
+              <Route path='/training' element={
+                <CalendarProvider>
+                <Calendar />
+                </CalendarProvider>
+                } />
             </Route>
           </Routes>
         </Suspense>

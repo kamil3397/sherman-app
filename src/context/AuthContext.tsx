@@ -1,6 +1,5 @@
 import { FC, ReactNode, useContext, createContext, useState } from 'react';
 import axios from 'axios';
-import { useAlertContext } from './AlertContext/AlertContext';
 
 interface AuthContextProps {
     loginClient: (values: LoginData) => Promise<void>
@@ -22,8 +21,8 @@ interface LoginData {
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const { showSuccessAlert, showErrorAlert } = useAlertContext();
-  const [user, setUser] = useState<UserType>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setUser] = useState<UserType>();
 
   const loginClient = async (values: LoginData) => {
     await axios.post('http://localhost:4000/login', values)

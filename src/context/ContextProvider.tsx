@@ -9,11 +9,11 @@ export const ContextProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <ThemeProvider theme={theme} defaultMode={prefersDarkMode ? 'dark' : 'light'}>
-      <AlertProvider>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
-      </AlertProvider>
+        <AlertProvider>
+         <AuthProvider>
+           {children}
+          </AuthProvider>
+        </AlertProvider>
     </ThemeProvider>
   );
 };
