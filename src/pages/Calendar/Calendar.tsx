@@ -14,7 +14,6 @@ const Calendar: FC = () => {
   const [eventStartDate, setEventStartDate] = useState<string>();
   const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
  
-
   const openAddEventModal = (date: Date, hour: number) => {
     const isoEventStartDate = formatISO(addHours(date, hour));
     setEventStartDate(isoEventStartDate);
@@ -24,7 +23,6 @@ const Calendar: FC = () => {
     setEventStartDate(undefined)
   }
   
-
   const handleOpenInfoModal= (event: EventType) => {
     setSelectedEvent(event);
   };
