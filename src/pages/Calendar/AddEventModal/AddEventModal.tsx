@@ -14,7 +14,7 @@ import { FormTextField } from '../../../components/FormTextField';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { DateTimeISO } from 'types/DateTimeISO';
 import { schema , FormData} from './schema';
-import { getEventDefaultValues } from 'utils/getEventDefaultValues';
+import { getEventDefaultValues } from './getEventDefaultValues';
 
 type EventModalProps = {
   open: boolean;
