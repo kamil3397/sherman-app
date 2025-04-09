@@ -64,10 +64,11 @@ const Calendar: FC = () => {
       </Grid>
 
       <AddEventModal
+        key={eventStartDate}
         open={!!eventStartDate}
-        onClose={closeAddEventModal }
+        onClose={closeAddEventModal}
         eventDefaultDate={eventStartDate}
-      />
+/>
 
       <EventInfoModal open={!!selectedEvent} event={selectedEvent} onClose={handleCloseInfoModal} />
     </Box>

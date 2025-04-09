@@ -11,23 +11,17 @@ import { useAlertContext } from '../../../context/AlertContext/AlertContext';
 import { dayAndTimeToISO } from '../../../utils/dayAndTimeToISO';
 import { FormAutocomplete, OptionType } from '../../../components/FormAutocomplete';
 import { FormTextField } from '../../../components/FormTextField';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { DateTimeISO } from 'types/DateTimeISO';
+import { schema , FormData} from './schema';
+import { getEventDefaultValues } from './getEventDefaultValues';
 
 type EventModalProps = {
   open: boolean;
   onClose: () => void;
-  eventDefaultDate?: string // DateTimeISO
+  eventDefaultDate?: DateTimeISO 
 };
 
-type FormData = {
-  title: string;
-  description: string;
-  guests: OptionType[];
-  time: string;
-  endTime: string;
-  date: string;
-};
 
 type UserType = {
   id: string;
@@ -35,41 +29,23 @@ type UserType = {
   email: string;
 };
 
-const schema = yup.object({
-  title: yup.string().required('Tytuł jest wymagany').min(3, 'Tytuł musi mieć co najmniej 3 znaki'),
-  description: yup.string().required('Opis jest wymagany').min(3, 'Opis musi mieć co najmniej 3 znaki'),
-  guests: yup.array().default([]),
-  time: yup.string().required('Godzina rozpoczęcia jest wymagana'),
-  endTime: yup
-    .string()
-    .required('Godzina zakończenia jest wymagana')
-    .test(
-      'is-later',
-      'Ten sam czas zakończenia!',
-      (endTime, { parent }) => {
-        const startTime = parent.time;
-        return startTime && endTime ? startTime < endTime : true;
-      }
-    ),
-  date: yup.string().required('Data jest wymagana'),
-});
+
 
 export const AddEventModal: FC<EventModalProps> = ({ open, onClose, eventDefaultDate }) => {
   const [error, setError] = useState<string | null>(null);
   const [guestsOptions, setGuestsOptions] = useState<OptionType[]>([]);
   const { showSuccessAlert } = useAlertContext();
 
-  const { control, handleSubmit, watch, formState: { errors } } = useForm<FormData>({
+  const { control, handleSubmit, watch, reset, formState: { errors } } = useForm<FormData>({
     resolver: yupResolver(schema),
-    defaultValues: {
-      title: '',
-      description: '',
-      guests: [],
-      date: eventDefaultDate?.split('T')[0] || '',
-      time: eventDefaultDate?.split('T')[1].slice(0, 5),// startHour
-      endTime: eventDefaultDate?.split('T')[1].slice(0, 6), //endHour
-    },
+    defaultValues: getEventDefaultValues(eventDefaultDate),
   });
+  
+
+  const closeModal = () => {
+    reset();
+    onClose()
+  }
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -115,7 +91,7 @@ export const AddEventModal: FC<EventModalProps> = ({ open, onClose, eventDefault
 
       await axios.post('http://localhost:4000/calendar/events/add', body);
       showSuccessAlert('Event added successfully');
-      onClose();
+      closeModal();
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
       const errorMessage = axiosError.response?.data?.message || 'An unexpected error occurred.';
@@ -125,7 +101,7 @@ export const AddEventModal: FC<EventModalProps> = ({ open, onClose, eventDefault
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={closeModal}>
       <Box
         sx={{
           position: 'absolute',
@@ -140,7 +116,7 @@ export const AddEventModal: FC<EventModalProps> = ({ open, onClose, eventDefault
         }}
       >
         <IconButton
-          onClick={onClose}
+          onClick={closeModal}
           sx={{
             position: 'absolute',
             top: 8,
